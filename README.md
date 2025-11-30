@@ -1,4 +1,4 @@
-[index.html](https://github.com/user-attachments/files/23729524/index.html)
+
 <!DOCTYPE html>
 <html lang="ru" theme="light">
 <head>
