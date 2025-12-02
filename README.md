@@ -1,1 +1,5288 @@
-
+<!DOCTYPE html>
+<html lang="ru" theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <title>ADVICE · Telegram Mini App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#000000" />
+  <style>
+    :root {
+      --color-bg-app: #f5f5f5;
+      --color-bg-app-alt: #ededed;
+      --color-surface: #ffffff;
+      --color-surface-soft: #f7f7f7;
+      --color-text-main: #050505;
+      --color-text-soft: #7a7a7a;
+      --color-text-muted: #9b9b9b;
+      --color-border-subtle: #e1e1e1;
+      --color-border-strong: #c8c8c8;
+      --color-focus-ring: #000000;
+      --radius-m: 14px;
+      --radius-card: 18px;
+      --radius-pill: 999px;
+      --space-xs: 4px;
+      --space-s: 8px;
+      --space-m: 12px;
+      --space-l: 16px;
+      --space-xl: 24px;
+      --space-2xl: 32px;
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Roboto", sans-serif;
+      --font-size-xs: 11px;
+      --font-size-s: 12px;
+      --font-size-m: 13px;
+      --font-size-l: 14px;
+      --font-size-xl: 16px;
+      --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.08);
+      --shadow-card: 0 18px 46px rgba(0, 0, 0, 0.11);
+      --motion-fast: 140ms;
+      --motion-medium: 240ms;
+      --motion-slow: 380ms;
+      --easing-standard: cubic-bezier(0.2, 0.0, 0.2, 1);
+      --easing-decelerate: cubic-bezier(0.0, 0.0, 0.0, 1);
+      --easing-accelerate: cubic-bezier(0.4, 0.0, 1, 1);
+      --z-intro: 60;
+      --z-header: 20;
+      --z-bottom-nav: 30;
+      --btn-primary-bg: #000000;
+      --btn-primary-text: #ffffff;
+      --btn-primary-border: #000000;
+      --btn-secondary-bg: #ffffff;
+      --btn-secondary-text: #050505;
+      --btn-secondary-border: #000000;
+      --nav-active-bg: #000000;
+      --nav-active-text: #ffffff;
+    }
+    :root[theme="light"] {
+      --splash-bg: #f5f5f5;
+      --questions-bg: #f5f5f5;
+      --splash-text: #050505;
+    }
+    :root[theme="dark"] {
+      --splash-bg: #050505;
+      --questions-bg: #050505;
+      --splash-text: #ffffff;
+    }
+    body.theme-dark {
+      --color-bg-app: #0f1114;
+      --color-bg-app-alt: #15181d;
+      --color-surface: #161a20;
+      --color-surface-soft: #1c2027;
+      --color-text-main: #f4f6fb;
+      --color-text-soft: #c5cada;
+      --color-text-muted: #9aa2b5;
+      --color-border-subtle: #252b35;
+      --color-border-strong: #343c49;
+      --color-focus-ring: #5be37d;
+      --btn-primary-bg: #5be37d;
+      --btn-primary-text: #03140c;
+      --btn-primary-border: #5be37d;
+      --btn-secondary-bg: #131924;
+      --btn-secondary-text: #f4f6fb;
+      --btn-secondary-border: #2f3745;
+      --nav-active-bg: #5be37d;
+      --nav-active-text: #03140c;
+      background: radial-gradient(circle at top, #0f1114 0, #12151a 55%, #0d0f13 100%);
+      color: var(--color-text-main);
+    }
+    @keyframes fadeInSoft {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes scaleInOvershoot {
+      0% {
+        transform: scale(0.92);
+        opacity: 0;
+      }
+      70% {
+        transform: scale(1.03);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    @keyframes introLogoLeave {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+        letter-spacing: 0.28em;
+        filter: blur(0);
+      }
+      60% {
+        transform: translateY(-12px) scale(1.03);
+        opacity: 0.7;
+        letter-spacing: 0.38em;
+      }
+      100% {
+        transform: translateY(22px) scale(0.94);
+        opacity: 0;
+        letter-spacing: 0.08em;
+        filter: blur(4px);
+      }
+    }
+    @keyframes introHelloIn {
+      0% {
+        opacity: 0;
+        transform: translateY(18px) scale(0.96);
+        letter-spacing: 0.18em;
+      }
+      60% {
+        opacity: 1;
+        transform: translateY(-2px) scale(1.02);
+        letter-spacing: 0.10em;
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        letter-spacing: 0.06em;
+      }
+    }
+    @keyframes chatBubbleIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes locatorSweep {
+      0% {
+        transform: translateX(-120%);
+      }
+      100% {
+        transform: translateX(120%);
+      }
+    }
+    @keyframes locatorPulse {
+      0% {
+        transform: scale(0.4);
+        opacity: 0.35;
+      }
+      60% {
+        opacity: 0.15;
+      }
+      100% {
+        transform: scale(1.6);
+        opacity: 0;
+      }
+    }
+    @keyframes corePulse {
+      0% {
+        transform: translate(-50%, -50%) scale(0.3);
+        opacity: 0.0;
+      }
+      25% {
+        transform: translate(-50%, -50%) scale(1.05);
+        opacity: 1;
+      }
+      55% {
+        transform: translate(-50%, -50%) scale(0.9);
+        opacity: 0.95;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1.12);
+        opacity: 0;
+      }
+    }
+    @keyframes rippleWaveAdvanced {
+      0% {
+        transform: translate(-50%, -50%) scale(0.4);
+        opacity: 0.9;
+        border-width: 2px;
+      }
+      40% {
+        opacity: 0.6;
+      }
+      80% {
+        transform: translate(-50%, -50%) scale(3.0);
+        opacity: 0.25;
+        border-width: 1px;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(3.6);
+        opacity: 0;
+        border-width: 1px;
+      }
+    }
+    @keyframes typingBlink {
+      0%,
+      60%,
+      100% {
+        opacity: 0.3;
+        transform: translateY(0);
+      }
+      30% {
+        opacity: 1;
+        transform: translateY(-1px);
+      }
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: radial-gradient(circle at top, #ffffff 0, #f5f5f5 55%, #ebebeb 100%);
+      color: var(--color-text-main);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    button {
+      font-family: inherit;
+      cursor: pointer;
+    }
+    input,
+    select {
+      font-family: inherit;
+    }
+    :focus-visible {
+      outline: 2px solid var(--color-focus-ring);
+      outline-offset: 2px;
+    }
+    .app-shell {
+      min-height: 100vh;
+      max-width: 540px;
+      margin: 0 auto;
+      padding: var(--space-m);
+      padding-bottom: 80px;
+      display: flex;
+      flex-direction: column;
+      opacity: 1;
+      transition: opacity var(--motion-medium) var(--easing-standard);
+    }
+    .app-shell--hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    main#app-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-l);
+      animation: fadeInSoft var(--motion-medium) var(--easing-standard);
+    }
+    /* ---------- INTRO ---------- */
+    .intro-root {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.18), transparent 42%),
+        radial-gradient(circle at 70% 70%, rgba(91, 227, 125, 0.14), transparent 48%),
+        var(--splash-bg);
+      color: var(--color-text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: var(--z-intro);
+      backdrop-filter: blur(30px) saturate(1.35);
+      transition: opacity var(--motion-medium) var(--easing-standard), transform var(--motion-medium) var(--easing-standard), background var(--motion-medium) var(--easing-standard), backdrop-filter var(--motion-medium) var(--easing-standard);
+    }
+    .intro-root.intro-overlay {
+      pointer-events: none;
+      background: radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.15), transparent 36%),
+        radial-gradient(circle at 80% 70%, rgba(91, 227, 125, 0.18), transparent 46%),
+        rgba(8, 10, 14, 0.22);
+      backdrop-filter: blur(34px) saturate(1.4);
+    }
+    .intro-root.intro-overlay .intro-screen {
+      pointer-events: none;
+      background: var(--questions-bg);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: 0 26px 70px rgba(0, 0, 0, 0.22);
+      color: var(--splash-text);
+    }
+    body.theme-dark .intro-root.intro-overlay .intro-screen {
+      background: rgba(20, 24, 30, 0.9);
+      border-color: var(--color-border-strong);
+      box-shadow: 0 28px 70px rgba(0, 0, 0, 0.48);
+    }
+    body.theme-dark .intro-root {
+      background: radial-gradient(circle at 30% 20%, rgba(91, 227, 125, 0.16), transparent 40%),
+        radial-gradient(circle at 70% 70%, rgba(62, 111, 255, 0.2), transparent 52%),
+        rgba(8, 10, 14, 0.74);
+      color: var(--color-text-main);
+      backdrop-filter: blur(32px) saturate(1.35);
+    }
+    .intro-root.intro-water {
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(28px) saturate(1.35);
+    }
+    body.theme-dark .intro-root.intro-water {
+      background: rgba(8, 10, 14, 0.82);
+      backdrop-filter: blur(32px) saturate(1.45);
+    }
+    .intro-root.intro-hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(6px);
+    }
+    .intro-screen {
+      max-width: 460px;
+      width: 100%;
+      padding: var(--space-2xl) var(--space-l);
+      text-align: center;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      animation: fadeInSoft var(--motion-medium) var(--easing-decelerate);
+      position: relative;
+      background: var(--splash-bg);
+      color: var(--splash-text);
+    }
+    .intro-title-main {
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      padding: 10px 0;
+      display: inline-block;
+      color: var(--color-text-main);
+    }
+    .intro-title-main.intro-logo-leave {
+      animation: introLogoLeave 0.45s var(--easing-accelerate) forwards;
+    }
+    .intro-hello {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      animation: introHelloIn 0.5s var(--easing-decelerate);
+      color: var(--color-text-main);
+    }
+    .intro-question-label {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: var(--space-l);
+    }
+    .intro-stars-row {
+      display: inline-flex;
+      justify-content: center;
+      gap: 10px;
+      position: relative;
+    }
+    .intro-stars-row::after {
+      content: "";
+      position: absolute;
+      left: -6px;
+      right: -6px;
+      bottom: -8px;
+      height: 1px;
+      background: var(--color-text-main);
+      opacity: 0.14;
+    }
+    .intro-star {
+      background: transparent;
+      border: none;
+      padding: 0;
+      font-size: 30px;
+      line-height: 1;
+      color: var(--color-text-main);
+      opacity: 0.25;
+      transform-origin: center bottom;
+      transition: opacity var(--motion-fast) var(--easing-standard), transform var(--motion-fast) var(--easing-standard), text-shadow var(--motion-fast) var(--easing-standard);
+    }
+    .intro-star:hover {
+      opacity: 0.45;
+      transform: translateY(-1px) scale(1.05);
+    }
+    .intro-star--active {
+      opacity: 1;
+      transform: translateY(-2px) scale(1.18);
+      text-shadow: 0 0 0 var(--color-text-main), 0 6px 16px rgba(0, 0, 0, 0.45);
+    }
+    body.theme-dark .intro-star--active {
+      text-shadow: 0 0 0 var(--color-text-main), 0 6px 16px rgba(91, 227, 125, 0.35);
+    }
+    .attention-panel-slot {
+      width: 100%;
+      margin-top: var(--space-xl);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity var(--motion-medium) var(--easing-standard), transform var(--motion-medium) var(--easing-standard);
+    }
+    .attention-panel-slot--visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .attention-panel {
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-card);
+      padding: var(--space-l);
+      background: var(--color-surface);
+      text-align: left;
+      box-shadow: var(--shadow-soft);
+    }
+    .attention-panel-title {
+      font-size: var(--font-size-l);
+      font-weight: 600;
+      margin-bottom: var(--space-s);
+    }
+    .attention-panel-sub {
+      font-size: var(--font-size-s);
+      color: var(--color-text-soft);
+      margin-bottom: var(--space-m);
+      line-height: 1.4;
+    }
+    .attention-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: var(--space-m);
+    }
+    .attention-option {
+      border-radius: var(--radius-pill);
+      border: 1px dashed var(--color-border-strong);
+      padding: 6px 12px;
+      font-size: var(--font-size-s);
+      background: var(--color-surface-soft);
+      color: var(--color-text-main);
+      transition: background var(--motion-fast) var(--easing-standard), border-color var(--motion-fast) var(--easing-standard), transform var(--motion-fast) var(--easing-standard);
+    }
+    .attention-option--selected {
+      background: var(--color-text-main);
+      color: var(--color-bg-app);
+      border-color: var(--color-text-main);
+      transform: translateY(-1px);
+    }
+    .intro-dialog {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .intro-dialog-bubble {
+      max-width: 90%;
+      padding: 12px 16px;
+      border-radius: 20px;
+      font-size: var(--font-size-m);
+      line-height: 1.5;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity var(--motion-medium) var(--easing-standard), transform var(--motion-medium) var(--easing-standard);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .intro-dialog-bubble--bot {
+      align-self: flex-start;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border-subtle);
+      color: var(--color-text-main);
+    }
+    .intro-dialog-bubble--user {
+      align-self: flex-end;
+      background: var(--color-bg-app-alt);
+      color: var(--color-text-main);
+      border: 1px solid var(--color-border-strong);
+    }
+    .intro-dialog-bubble--visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .intro-dialog-meta {
+      font-size: var(--font-size-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--color-text-soft);
+      margin-bottom: 4px;
+    }
+    .intro-dialog-bubble::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      pointer-events: none;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
+      opacity: 0.45;
+      mix-blend-mode: screen;
+    }
+    .intro-actions {
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+    }
+    .intro-actions button[disabled] {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .menu-hero {
+      border-radius: var(--radius-card);
+      padding: var(--space-xl);
+      background: linear-gradient(135deg, #0ea5e9, #7c3aed);
+      color: #f8fafc;
+      box-shadow: var(--shadow-card);
+      margin-bottom: var(--space-l);
+      display: grid;
+      gap: var(--space-m);
+      align-items: start;
+    }
+    .menu-hero-title {
+      font-size: 22px;
+      font-weight: 900;
+      margin: 0;
+      line-height: 1.2;
+    }
+    .menu-hero-sub {
+      font-size: var(--font-size-m);
+      opacity: 0.92;
+      margin: 0;
+      line-height: 1.5;
+      max-width: 56ch;
+    }
+    .menu-hero-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: baseline;
+    }
+    .chip--menu {
+      background: #eef4ff;
+      color: #193a73;
+      border-color: rgba(14, 165, 233, 0.2);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.2;
+      padding: 6px 12px;
+      gap: 6px;
+      font-weight: 600;
+    }
+    .chip--menu-outline {
+      background: rgba(14, 165, 233, 0.08);
+      color: #0a3c6c;
+      border-color: rgba(14, 165, 233, 0.25);
+      box-shadow: none;
+    }
+    /* ---------- HEADER ---------- */
+    .c-header {
+      margin-bottom: var(--space-l);
+      padding: 10px 14px;
+      border-radius: var(--radius-pill);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border-subtle);
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      animation: fadeInSoft var(--motion-medium) var(--easing-standard);
+      z-index: var(--z-header);
+    }
+    .c-header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-m);
+    }
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #000;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-size-s);
+      font-weight: 600;
+    }
+    .c-header-title-main {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .c-header-title-sub {
+      font-size: 11px;
+      color: var(--color-text-soft);
+      white-space: nowrap;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .c-header-pill {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-border-strong);
+      background: var(--color-surface-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .c-header-pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      border: 1px solid #000;
+    }
+    .c-card {
+      border-radius: var(--radius-card);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border-subtle);
+      padding: 14px 16px;
+      box-shadow: var(--shadow-card);
+      animation: scaleInOvershoot var(--motion-medium) var(--easing-standard);
+    }
+    .c-card--flat {
+      box-shadow: none;
+      border-radius: var(--radius-m);
+    }
+    .c-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-s);
+    }
+    .c-card-title {
+      font-size: var(--font-size-l);
+      font-weight: 600;
+    }
+    .c-card-sub {
+      font-size: var(--font-size-s);
+      color: var(--color-text-soft);
+    }
+    .c-badge {
+      font-size: var(--font-size-xs);
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      background: var(--color-surface-soft);
+      border: 1px solid var(--color-border-subtle);
+      color: var(--color-text-soft);
+    }
+    .section-title {
+      font-size: var(--font-size-m);
+      font-weight: 600;
+      margin-bottom: var(--space-xs);
+    }
+    .section-sub {
+      font-size: var(--font-size-s);
+      color: var(--color-text-soft);
+      margin-bottom: var(--space-s);
+      line-height: 1.5;
+    }
+    .c-button {
+      border-radius: var(--radius-pill);
+      padding: 10px 14px;
+      font-size: var(--font-size-m);
+      font-weight: 600;
+      border: 1px solid var(--btn-primary-border);
+      background: var(--btn-primary-bg);
+      color: var(--btn-primary-text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: transform var(--motion-fast) var(--easing-standard), box-shadow var(--motion-fast) var(--easing-standard);
+    }
+    .c-button--secondary {
+      background: var(--btn-secondary-bg);
+      color: var(--btn-secondary-text);
+      border-color: var(--btn-secondary-border);
+    }
+    .c-button:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    .c-field {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--color-border-subtle);
+      background: var(--color-surface);
+      padding: 10px 12px;
+      font-size: var(--font-size-m);
+      color: var(--color-text-main);
+    }
+    .c-field::placeholder {
+      color: var(--color-text-muted);
+    }
+    [data-role="sleep-wake-time"] {
+      max-width: 240px;
+      width: 100%;
+    }
+    .chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: var(--space-xs);
+    }
+    .chip {
+      font-size: var(--font-size-xs);
+      padding: 4px 9px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-border-subtle);
+      background: var(--color-surface-soft);
+      color: var(--color-text-muted);
+    }
+    .chip--locator {
+      position: relative;
+      overflow: hidden;
+      border-color: rgba(0, 255, 153, 0.45);
+      background: rgba(0, 255, 153, 0.12);
+      color: #066a3c;
+      box-shadow: inset 0 0 0 1px rgba(0, 255, 153, 0.2);
+      font-weight: 600;
+      z-index: 0;
+    }
+    .chip--locator::before,
+    .chip--locator::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+    }
+    .chip--locator::before {
+      inset: -40%;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 255, 153, 0.35);
+      animation: locatorPulse 2.8s infinite ease-out;
+      z-index: -1;
+    }
+    .chip--locator::after {
+      inset: 0;
+      background: linear-gradient(120deg, transparent 0%, rgba(0, 255, 153, 0.0) 40%, rgba(0, 255, 153, 0.6) 50%, rgba(0, 255, 153, 0.0) 60%, transparent 100%);
+      animation: locatorSweep 2.2s linear infinite;
+      opacity: 0.65;
+      z-index: -1;
+    }
+    /* attention card */
+    .attention-card {
+      margin-top: var(--space-m);
+    }
+    .attention-chat {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: var(--space-s);
+    }
+    .attention-chat--intro .attention-bubble {
+      opacity: 0;
+      transform: translateY(8px);
+      animation: chatBubbleIn var(--motion-medium) var(--easing-standard) forwards;
+      animation-delay: calc(var(--bubble-index, 0) * 140ms);
+    }
+    .attention-bubble {
+      border-radius: 18px;
+      padding: 12px 16px;
+      border: 1px solid var(--color-border-subtle);
+      background: var(--color-surface);
+      box-shadow: 0 18px 38px rgba(0, 0, 0, 0.08);
+    }
+    .attention-bubble--note {
+      align-self: center;
+      border-style: dashed;
+      box-shadow: none;
+      background: var(--color-surface-soft);
+      color: var(--color-text-soft);
+      font-size: var(--font-size-s);
+    }
+    .attention-bubble-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      font-size: var(--font-size-s);
+      margin-bottom: 6px;
+    }
+    .attention-item-title {
+      font-weight: 600;
+      font-size: var(--font-size-m);
+    }
+    .attention-bubble-score {
+      font-size: var(--font-size-s);
+      color: var(--color-text-soft);
+    }
+    .attention-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .attention-chip {
+      border-radius: var(--radius-pill);
+      background: var(--color-surface-soft);
+      border: 1px dashed var(--color-border-strong);
+      padding: 5px 10px;
+      font-size: var(--font-size-xs);
+      color: var(--color-text-main);
+    }
+    /* bottom nav */
+    .c-bottom-nav {
+      position: fixed;
+      left: 50%;
+      bottom: 10px;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 540px;
+      padding: 6px 10px;
+      z-index: var(--z-bottom-nav);
+      opacity: 1;
+      transition: opacity var(--motion-medium) var(--easing-standard);
+    }
+    .c-bottom-nav.app-shell--hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .c-bottom-nav-inner {
+      background: var(--color-surface);
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-border-subtle);
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 4px;
+    }
+    .bottom-nav-item {
+      flex: 1;
+      border-radius: var(--radius-pill);
+      padding: 6px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+    .bottom-nav-item--active {
+      background: var(--color-surface-soft);
+      color: var(--color-text-main);
+    }
+    .bottom-nav-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1px solid var(--color-border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+    .bottom-nav-dot--accent {
+      border-color: var(--nav-active-bg);
+      background: var(--nav-active-bg);
+      color: var(--nav-active-text);
+    }
+    /* chat */
+    .chat-window {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      height: clamp(240px, 56vh, 520px);
+      max-height: 60vh;
+      min-height: 220px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-right: 4px;
+      margin-bottom: var(--space-s);
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(126, 133, 155, 0.35);
+      background: linear-gradient(145deg, rgba(96, 165, 250, 0.12), rgba(59, 130, 246, 0.06)),
+        radial-gradient(circle at 22% 18%, rgba(125, 211, 252, 0.18), transparent 38%),
+        var(--color-surface);
+      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.18);
+    }
+    body.theme-dark .chat-window {
+      background: linear-gradient(145deg, rgba(91, 227, 125, 0.08), rgba(59, 130, 246, 0.06)),
+        radial-gradient(circle at 22% 18%, rgba(91, 227, 125, 0.12), transparent 34%),
+        var(--color-surface);
+      border-color: var(--color-border-strong);
+      box-shadow: 0 24px 56px rgba(0, 0, 0, 0.38);
+    }
+    .chat-message {
+      max-width: 80%;
+      padding: 12px 14px;
+      border-radius: 16px;
+      font-size: var(--font-size-s);
+      line-height: 1.4;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      box-shadow: 0 18px 32px rgba(0, 0, 0, 0.18);
+    }
+    /* profile */
+    .profile-hero {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--space-m);
+      align-items: center;
+      padding: var(--space-l);
+      border-radius: var(--radius-card);
+      background: linear-gradient(135deg, #eef2ff, #e0f2fe, #f5f3ff);
+      color: #0f172a;
+      border: 1px solid var(--color-border-subtle);
+      box-shadow: var(--shadow-card);
+      margin-bottom: var(--space-m);
+    }
+    body.theme-dark .profile-hero {
+      background: linear-gradient(135deg, #0b1220, #0f172a, #1e1b4b);
+      color: #e5e7eb;
+      border-color: var(--color-border-strong);
+      box-shadow: 0 28px 60px rgba(0, 0, 0, 0.46);
+    }
+    .profile-hero-avatar {
+      width: 54px;
+      height: 54px;
+      border-radius: 18px;
+      background: linear-gradient(145deg, #6366f1, #22d3ee);
+      color: #ffffff;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 20px;
+      box-shadow: 0 16px 30px rgba(99, 102, 241, 0.35);
+    }
+    body.theme-dark .profile-hero-avatar {
+      box-shadow: 0 16px 34px rgba(34, 211, 238, 0.32);
+    }
+    .profile-hero-name {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+    }
+    .profile-hero-sub {
+      font-size: var(--font-size-m);
+      color: var(--color-text-soft);
+      margin-top: 2px;
+    }
+    .profile-hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+      align-items: center;
+    }
+    .profile-hero-pill {
+      padding: 8px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-border-subtle);
+      background: rgba(255, 255, 255, 0.35);
+      color: inherit;
+      font-size: var(--font-size-s);
+      backdrop-filter: blur(3px);
+    }
+    body.theme-dark .profile-hero-pill {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--color-border-strong);
+    }
+    .profile-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-m);
+      margin-top: var(--space-m);
+    }
+    @media (min-width: 520px) {
+      .profile-meta-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    .profile-meta-card {
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-card);
+      padding: var(--space-m);
+      background: var(--color-surface);
+      box-shadow: var(--shadow-soft);
+    }
+    body.theme-dark .profile-meta-card {
+      border-color: var(--color-border-strong);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+    }
+    .profile-meta-title {
+      font-size: var(--font-size-m);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .profile-meta-value {
+      font-size: var(--font-size-l);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .profile-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .profile-chip {
+      font-size: var(--font-size-xs);
+      padding: 6px 9px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-border-subtle);
+      background: var(--color-surface-soft);
+      color: var(--color-text-soft);
+    }
+    body.theme-dark .profile-chip {
+      border-color: var(--color-border-strong);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--color-text-main);
+    }
+    .chat-message--user {
+      align-self: flex-end;
+      border-bottom-right-radius: 6px;
+      background: linear-gradient(120deg, #2563eb, #7c3aed);
+      color: #f8fafc;
+      border: 1px solid rgba(124, 58, 237, 0.35);
+    }
+    .chat-message--bot {
+      align-self: flex-start;
+      border-bottom-left-radius: 6px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(226, 232, 240, 0.92));
+      border: 1px solid var(--color-border-subtle);
+    }
+    body.theme-dark .chat-message--bot {
+      background: linear-gradient(135deg, rgba(22, 27, 36, 0.92), rgba(15, 20, 29, 0.9));
+      border-color: var(--color-border-strong);
+      color: var(--color-text-main);
+    }
+    .chat-meta {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      margin-bottom: 2px;
+    }
+    .typing-indicator {
+      display: inline-flex;
+      gap: 3px;
+    }
+    .typing-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 999px;
+      background: #7a7a7a;
+      animation: typingBlink 1s infinite;
+    }
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+    .chat-hero {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1fr;
+      padding: var(--space-m);
+      margin-bottom: var(--space-m);
+      border-radius: var(--radius-card);
+      background: linear-gradient(120deg, #4338ca, #8b5cf6);
+      color: #fff;
+      box-shadow: var(--shadow-card);
+    }
+    @media (min-width: 520px) {
+      .chat-hero {
+        grid-template-columns: 1.2fr 1fr;
+      }
+    }
+    .chat-hero-title {
+      font-size: 22px;
+      font-weight: 900;
+      margin: 0 0 6px;
+    }
+    .chat-hero-sub {
+      opacity: 0.9;
+      font-size: var(--font-size-m);
+      line-height: 1.5;
+    }
+    .chat-hero-side {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .chat-pill {
+      padding: 8px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-weight: 700;
+      font-size: var(--font-size-s);
+      backdrop-filter: blur(4px);
+    }
+    .chat-quick-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-bottom: var(--space-m);
+    }
+    @media (min-width: 520px) {
+      .chat-quick-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+    .chat-quick-card {
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-m);
+      padding: 10px;
+      background: var(--color-surface-soft);
+      font-size: var(--font-size-s);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: var(--shadow-soft);
+    }
+    .chat-quick-title {
+      font-weight: 700;
+      font-size: var(--font-size-m);
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-m);
+      justify-content: space-between;
+    }
+    .row--stack-m {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    @media (min-width: 420px) {
+      .row--stack-m {
+        flex-direction: row;
+      }
+    }
+    .back-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-border-strong);
+      background: var(--color-surface-soft);
+      color: var(--color-text-main);
+      font-weight: 600;
+      font-size: var(--font-size-m);
+      cursor: pointer;
+      box-shadow: var(--shadow-soft);
+    }
+    .back-button span {
+      font-size: 16px;
+      line-height: 1;
+    }
+    /* QUALITY CARD / INDEX */
+    .quality-card {
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(circle at top right, rgba(0, 0, 0, 0.06), transparent 55%), var(--color-surface);
+    }
+    body.theme-dark .quality-card {
+      background: radial-gradient(circle at top right, rgba(91, 227, 125, 0.16), transparent 55%), var(--color-surface);
+    }
+    .quality-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-l);
+    }
+    .quality-main-meta {
+      flex: 1;
+      min-width: 0;
+    }
+    .quality-score-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+    .life-score-main {
+      font-size: 30px;
+      font-weight: 800;
+      margin-bottom: 0;
+    }
+    .life-score-caption {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-soft);
+    }
+    .life-score-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-border-strong);
+      background: var(--color-surface-soft);
+    }
+    body.theme-dark .life-score-pill {
+      border-color: #5be37d;
+    }
+    .quality-thermo {
+      margin-top: var(--space-m);
+    }
+    .quality-thermo-track {
+      width: 100%;
+      height: 10px;
+      border-radius: var(--radius-pill);
+      background: var(--color-bg-app-alt);
+      overflow: hidden;
+      position: relative;
+    }
+    body.theme-dark .quality-thermo-track {
+      background: #10141b;
+    }
+    .quality-thermo-fill {
+      position: absolute;
+      inset: 0;
+      transform-origin: left center;
+      transform: scaleX(var(--quality-score, 0));
+      background: linear-gradient(90deg, #ef4444 0%, #f97316 35%, #facc15 65%, #22c55e 100%);
+      transition: transform var(--motion-medium) var(--easing-standard);
+    }
+    .quality-thermo-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      margin-top: 4px;
+    }
+    .quality-description {
+      margin-top: var(--space-m) !important;
+    }
+    .quality-actions {
+      margin-top: var(--space-m);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .quality-state-badge {
+      margin-top: 8px;
+      font-size: var(--font-size-xs);
+      padding: 4px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-border-subtle);
+      background: var(--color-surface-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .quality-state-badge--good {
+      border-color: #16a34a;
+      background: rgba(22, 163, 74, 0.16);
+      color: #065f46;
+    }
+    .quality-state-badge--ok {
+      border-color: #f59e0b;
+      background: rgba(245, 158, 11, 0.16);
+      color: #92400e;
+    }
+    .quality-state-badge--bad {
+      border-color: #ef4444;
+      background: rgba(239, 68, 68, 0.18);
+      color: #7f1d1d;
+    }
+    .quality-state-badge--neutral {
+      opacity: 0.85;
+    }
+    /* history */
+    .lifeline-card {
+      margin-top: var(--space-l);
+      padding-bottom: 24px;
+    }
+    .lifeline-header-row {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      margin-bottom: var(--space-s);
+    }
+    .lifeline-label-main {
+      font-size: var(--font-size-m);
+      font-weight: 600;
+    }
+    .lifeline-label-sub {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+    .lifeline-percentile {
+      font-size: var(--font-size-xs);
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px dashed var(--color-border-subtle);
+      color: var(--color-text-soft);
+      margin-top: 6px;
+    }
+    .lifeline-track {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      margin-top: var(--space-s);
+      padding-top: 2px;
+    }
+    .lifeline-day {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      min-width: 0;
+    }
+    .lifeline-bar {
+      width: 100%;
+      height: 40px;
+      border-radius: var(--radius-pill);
+      background: var(--color-surface-soft);
+      border: 1px solid var(--color-border-subtle);
+      position: relative;
+      overflow: hidden;
+    }
+    .lifeline-bar-inner {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: inherit;
+      background: linear-gradient(180deg, var(--bar-color-start, #000) 0%, var(--bar-color-end, #111) 100%);
+      transform-origin: bottom;
+      transition: transform var(--motion-medium) var(--easing-standard), opacity var(--motion-medium) var(--easing-standard);
+    }
+    .lifeline-bar--placeholder {
+      background: transparent;
+      border-style: dashed;
+    }
+    .lifeline-bar--placeholder .lifeline-bar-inner {
+      display: none;
+    }
+    .lifeline-day-score {
+      font-size: 11px;
+      color: var(--color-text-soft);
+    }
+    .lifeline-day-label {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+    .lifeline-day-label--placeholder {
+      opacity: 0.45;
+    }
+    .lifeline-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: var(--space-m);
+      flex-wrap: wrap;
+    }
+    .history-panel {
+      margin-top: 12px;
+      border: 1px dashed var(--color-border-subtle);
+      border-radius: var(--radius-m);
+      padding: var(--space-m);
+      background: var(--color-surface);
+    }
+    .history-panel h4 {
+      margin: 0 0 8px;
+      font-size: var(--font-size-m);
+    }
+    .history-content {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    @media (min-width: 480px) {
+      .history-content {
+        grid-template-columns: 1fr 1.2fr;
+      }
+    }
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .history-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: var(--radius-m);
+      border: 1px solid var(--color-border-subtle);
+      background: var(--color-surface-soft);
+      text-align: left;
+      gap: 10px;
+    }
+    .history-row--active {
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+    }
+    .history-row-title {
+      font-weight: 600;
+      font-size: var(--font-size-m);
+    }
+    .history-row-sub {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+    .history-row-score {
+      font-weight: 700;
+      font-size: var(--font-size-l);
+    }
+    .history-detail {
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-m);
+      padding: var(--space-m);
+      background: var(--color-surface-soft);
+      min-height: 180px;
+    }
+    .history-detail h5 {
+      margin: 0 0 6px;
+      font-size: var(--font-size-m);
+    }
+    .history-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .history-detail-block {
+      padding: 10px;
+      border-radius: var(--radius-m);
+      border: 1px solid var(--color-border-subtle);
+      background: var(--color-surface);
+    }
+    .history-detail-block-title {
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .history-detail-score {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .history-reasons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .history-reason-chip {
+      padding: 4px 8px;
+      border-radius: var(--radius-pill);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border-subtle);
+      font-size: var(--font-size-xs);
+      color: var(--color-text-soft);
+    }
+    .history-note {
+      width: 100%;
+      min-height: 70px;
+      border-radius: 12px;
+      border: 1px solid var(--color-border-subtle);
+      background: var(--color-surface);
+      padding: 10px 12px;
+      font-size: var(--font-size-m);
+      font-family: var(--font-sans);
+      resize: vertical;
+      color: var(--color-text-main);
+    }
+    .history-note::placeholder {
+      color: var(--color-text-muted);
+    }
+    .history-note-row {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-m);
+    }
+    .feature-card {
+      border-radius: var(--radius-card);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border-subtle);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: var(--font-size-s);
+      transition: transform var(--motion-fast) var(--easing-standard), box-shadow var(--motion-fast) var(--easing-standard), border-color var(--motion-fast) var(--easing-standard);
+    }
+    .feature-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+      border-color: #000;
+    }
+    .feature-card-title {
+      font-weight: 600;
+      font-size: var(--font-size-m);
+    }
+    .feature-card-pill {
+      font-size: var(--font-size-xs);
+      padding: 2px 6px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-border-subtle);
+      color: var(--color-text-muted);
+      width: fit-content;
+    }
+    .feature-card-footer {
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: var(--font-size-xs);
+      color: var(--color-text-soft);
+    }
+    /* menu cards */
+    .menu-grid {
+      display: grid;
+      gap: var(--space-l);
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 520px) {
+      .menu-grid {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+    }
+    .menu-card {
+      border-radius: var(--radius-card);
+      border: 1px solid var(--color-border-subtle);
+      background: var(--color-surface);
+      padding: var(--space-l);
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-m);
+      position: relative;
+      overflow: hidden;
+    }
+    .menu-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 90% 20%, rgba(0, 0, 0, 0.06), transparent 55%);
+      opacity: 0.7;
+    }
+    body.theme-dark .menu-card::after {
+      background: radial-gradient(circle at 90% 20%, rgba(91, 227, 125, 0.15), transparent 55%);
+    }
+    .menu-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-m);
+      margin-bottom: var(--space-s);
+    }
+    .menu-card-headings {
+      display: grid;
+      gap: 6px;
+      align-content: start;
+    }
+    .menu-card-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 1;
+    }
+    .menu-card-sub {
+      font-size: var(--font-size-s);
+      color: var(--color-text-soft);
+      z-index: 1;
+      line-height: 1.5;
+      margin: 0;
+    }
+    .menu-card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--color-surface-soft);
+      border: 1px solid var(--color-border-subtle);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      font-size: 16px;
+      z-index: 1;
+    }
+    .menu-card-list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--color-text-main);
+      z-index: 1;
+      display: grid;
+      gap: 8px;
+    }
+    .menu-card-list li {
+      font-size: var(--font-size-s);
+      line-height: 1.5;
+    }
+    .menu-card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      z-index: 1;
+      align-items: center;
+    }
+    .menu-stat-chip {
+      border-radius: var(--radius-pill);
+      border: 1px dashed var(--color-border-strong);
+      padding: 6px 10px;
+      font-size: var(--font-size-xs);
+      color: var(--color-text-soft);
+      background: var(--color-surface-soft);
+      z-index: 1;
+    }
+    /* sleep helpers */
+    .sleep-checklist {
+      border: 1px dashed var(--color-border-subtle);
+      border-radius: var(--radius-m);
+      padding: var(--space-m);
+      background: var(--color-surface-soft);
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .sleep-checklist label {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: var(--font-size-s);
+      cursor: pointer;
+      color: var(--color-text-main);
+    }
+    .sleep-habits {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .sleep-habit-pill {
+      padding: 6px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-border-subtle);
+      background: var(--color-surface);
+      font-size: var(--font-size-xs);
+      color: var(--color-text-soft);
+    }
+    /* finance helpers */
+    .finance-grid {
+      display: grid;
+      gap: var(--space-s);
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 520px) {
+      .finance-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    .finance-note {
+      font-size: var(--font-size-s);
+      color: var(--color-text-soft);
+    }
+    .safety-result {
+      margin-top: 10px;
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-m);
+      background: var(--color-surface-soft);
+      padding: var(--space-m);
+    }
+    .safety-progress {
+      width: 100%;
+      height: 10px;
+      border-radius: var(--radius-pill);
+      background: var(--color-bg-app-alt);
+      overflow: hidden;
+      margin: 8px 0;
+    }
+    .safety-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #22c55e, #5be37d);
+      transform-origin: left;
+      transition: transform var(--motion-medium) var(--easing-standard);
+    }
+    .sleep-hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-m);
+      padding: var(--space-l);
+      border-radius: var(--radius-card);
+      background: linear-gradient(135deg, #0b1224, #182a4d, #312e81);
+      color: #e5e7eb;
+      box-shadow: 0 28px 60px rgba(0, 0, 0, 0.32);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      margin-bottom: var(--space-m);
+    }
+    .sleep-hero--empty {
+      background: linear-gradient(135deg, #111827, #1f2937);
+    }
+    body.theme-dark .sleep-hero,
+    body.theme-dark .sleep-hero--empty {
+      background: linear-gradient(135deg, #0b1220, #0f172a, #1f2a44);
+      color: #e5e7eb;
+      border-color: var(--color-border-strong);
+      box-shadow: 0 28px 60px rgba(0, 0, 0, 0.45);
+    }
+    .sleep-hero-label {
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: var(--font-size-xs);
+      opacity: 0.85;
+    }
+    .sleep-hero-main {
+      font-size: 26px;
+      font-weight: 900;
+      margin: 4px 0;
+    }
+    .sleep-hero-sub {
+      font-size: var(--font-size-m);
+      opacity: 0.9;
+    }
+    .sleep-hero-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .sleep-panels {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-m);
+      margin-bottom: var(--space-m);
+    }
+    @media (min-width: 520px) {
+      .sleep-panels {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    .sleep-panel {
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-card);
+      background: var(--color-surface);
+      box-shadow: var(--shadow-soft);
+      padding: var(--space-m);
+    }
+    .sleep-steps {
+      display: grid;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .sleep-step {
+      padding: 10px;
+      border-radius: var(--radius-m);
+      background: var(--color-surface-soft);
+      border: 1px dashed var(--color-border-subtle);
+      font-size: var(--font-size-m);
+      line-height: 1.4;
+    }
+    .sleep-env-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .sleep-env-chip {
+      padding: 8px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-border-subtle);
+      background: var(--color-surface-soft);
+      font-size: var(--font-size-xs);
+      color: var(--color-text-soft);
+    }
+    .sleep-settings {
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-card);
+      padding: var(--space-m);
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.04), rgba(15, 23, 42, 0));
+    }
+    .pill {
+      padding: 8px 12px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: inherit;
+      font-weight: 600;
+      font-size: var(--font-size-s);
+      backdrop-filter: blur(4px);
+    }
+    .pill-ghost {
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .sleep-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-m);
+    }
+    @media (min-width: 560px) {
+      .sleep-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    .sleep-panel input[type="time"],
+    .sleep-panel select[data-role="sleep-noise"] {
+      width: 100%;
+      min-width: 0;
+      font-size: var(--font-size-l);
+    }
+    @media (max-width: 420px) {
+      .sleep-panel input[type="time"] {
+        font-size: var(--font-size-m);
+      }
+    }
+    .sleep-panel {
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: var(--radius-card);
+      padding: var(--space-m);
+      background: linear-gradient(150deg, rgba(255, 255, 255, 0.96), rgba(237, 242, 247, 0.94));
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+    }
+    body.theme-dark .sleep-panel {
+      background: linear-gradient(170deg, rgba(22, 27, 36, 0.96), rgba(14, 18, 27, 0.92));
+      border-color: var(--color-border-strong);
+      box-shadow: 0 22px 44px rgba(0, 0, 0, 0.38);
+    }
+    .sleep-timeline {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .sleep-timeline-row {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 10px;
+      border-radius: var(--radius-m);
+      border: 1px dashed var(--color-border-strong);
+      background: var(--color-surface-soft);
+    }
+    .sleep-timeline-time {
+      font-weight: 700;
+      font-size: var(--font-size-m);
+    }
+    .sleep-timeline-text {
+      font-size: var(--font-size-s);
+      color: var(--color-text-main);
+      line-height: 1.5;
+    }
+    .sleep-list {
+      margin: 10px 0 0 16px;
+      padding: 0;
+      display: grid;
+      gap: 6px;
+      color: var(--color-text-main);
+    }
+    .sleep-placeholder {
+      min-height: 160px;
+      border: 1px dashed var(--color-border-subtle);
+      border-radius: var(--radius-card);
+      background: var(--color-surface-soft);
+    }
+    .finance-hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-m);
+      padding: var(--space-l);
+      border-radius: var(--radius-card);
+      background: linear-gradient(120deg, #0ea5e9, #22c55e);
+      color: #fff;
+      box-shadow: var(--shadow-card);
+      margin-bottom: var(--space-m);
+    }
+    .finance-hero-label {
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: var(--font-size-xs);
+      opacity: 0.85;
+    }
+    .finance-hero-main {
+      font-size: 26px;
+      font-weight: 900;
+      margin: 4px 0;
+    }
+    .finance-hero-sub {
+      font-size: var(--font-size-m);
+      opacity: 0.9;
+    }
+    .finance-hero-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-end;
+    }
+    .finance-panel {
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-card);
+      padding: var(--space-m);
+      background: var(--color-surface);
+      box-shadow: var(--shadow-soft);
+    }
+    .finance-plan-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--space-m);
+      margin-top: var(--space-m);
+    }
+    .finance-bucket {
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-m);
+      padding: 10px;
+      background: var(--color-surface-soft);
+    }
+    .finance-bucket-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .finance-bucket-label {
+      font-weight: 700;
+    }
+    .finance-bucket-amount {
+      font-weight: 800;
+      font-size: var(--font-size-m);
+    }
+    .finance-alloc-bar {
+      width: 100%;
+      height: 8px;
+      border-radius: var(--radius-pill);
+      background: var(--color-bg-app-alt);
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+    .finance-alloc-bar span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #22c55e);
+    }
+    .finance-bucket-desc {
+      font-size: var(--font-size-s);
+      color: var(--color-text-soft);
+    }
+    .finance-tip {
+      grid-column: 1 / -1;
+      border: 1px dashed var(--color-border-strong);
+      border-radius: var(--radius-m);
+      padding: 10px;
+      font-size: var(--font-size-s);
+      background: var(--color-surface);
+    }
+    .finance-placeholder {
+      border: 1px dashed var(--color-border-subtle);
+      border-radius: var(--radius-card);
+      padding: var(--space-m);
+      background: var(--color-surface-soft);
+      font-size: var(--font-size-s);
+      color: var(--color-text-soft);
+      margin-top: var(--space-m);
+    }
+    .finance-actions {
+      margin: 8px 0 0 16px;
+      padding: 0;
+      display: grid;
+      gap: 6px;
+      color: var(--color-text-main);
+    }
+    .finance-compact-form {
+      display: grid;
+      gap: var(--space-s);
+    }
+    .finance-cat-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    @media (min-width: 520px) {
+      .finance-cat-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    .finance-cat-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .finance-cat-label {
+      min-width: 120px;
+      font-size: var(--font-size-s);
+      color: var(--color-text-soft);
+    }
+    .finance-cat-input {
+      flex: 1;
+    }
+    .finance-hero-gap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .finance-gap-badge {
+      padding: 6px 10px;
+      border-radius: var(--radius-pill);
+      font-weight: 700;
+      font-size: var(--font-size-s);
+      border: 1px solid var(--color-border-strong);
+      background: var(--color-surface-soft);
+    }
+    .finance-gap-badge--bad {
+      border-color: #ef4444;
+      background: rgba(239, 68, 68, 0.18);
+      color: #7f1d1d;
+    }
+    .finance-gap-badge--good {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.15);
+      color: #065f46;
+    }
+    .finance-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: var(--space-s);
+      margin-top: 10px;
+    }
+    .finance-mini-card {
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-m);
+      padding: 10px;
+      background: var(--color-surface);
+      box-shadow: var(--shadow-soft);
+    }
+    .finance-mini-title {
+      font-size: var(--font-size-s);
+      color: var(--color-text-soft);
+      margin-bottom: 6px;
+    }
+    .finance-mini-value {
+      font-weight: 800;
+      font-size: var(--font-size-l);
+    }
+    .finance-reco {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .finance-reco-item {
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-m);
+      padding: 10px;
+      background: var(--color-surface-soft);
+    }
+    .finance-reco-lead {
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .finance-reco-tips {
+      display: grid;
+      gap: 4px;
+      font-size: var(--font-size-s);
+      color: var(--color-text-soft);
+    }
+    .finance-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .finance-chip {
+      padding: 6px 10px;
+      border-radius: var(--radius-pill);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border-subtle);
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+    .finance-stack {
+      display: grid;
+      gap: var(--space-m);
+    }
+    /* family */
+    .family-hero {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      padding: var(--space-xl);
+      border-radius: var(--radius-card);
+      background: linear-gradient(135deg, rgba(91, 227, 125, 0.12), rgba(120, 195, 255, 0.12)),
+        radial-gradient(circle at 20% 20%, rgba(0, 0, 0, 0.04), transparent 40%);
+      color: var(--color-text-main);
+      box-shadow: var(--shadow-card);
+      margin-bottom: var(--space-m);
+      border: 1px solid var(--color-border-subtle);
+    }
+    @media (min-width: 560px) {
+      .family-hero {
+        grid-template-columns: 1.05fr 0.95fr;
+      }
+    }
+    .family-hero-title {
+      font-size: 22px;
+      font-weight: 900;
+      margin: 0 0 6px;
+    }
+    .family-hero-sub {
+      font-size: var(--font-size-m);
+      line-height: 1.5;
+      opacity: 0.9;
+    }
+    .family-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .family-hero-side {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      justify-content: center;
+    }
+    .family-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: var(--space-m);
+    }
+    .family-card {
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-card);
+      background: var(--color-surface);
+      padding: var(--space-m);
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .family-card h4 {
+      margin: 0;
+      font-size: var(--font-size-l);
+    }
+    /* game */
+    .game-shell {
+      --topic-accent: #8b5cf6;
+      --topic-accent-strong: #6d28d9;
+      background:
+        radial-gradient(circle at 20% 16%, rgba(255, 255, 255, 0.06), transparent 34%),
+        radial-gradient(circle at 82% 10%, rgba(255, 255, 255, 0.1), transparent 36%),
+        radial-gradient(120% 120% at 50% 6%, rgba(130, 91, 255, 0.45), rgba(15, 23, 42, 0.16)),
+        conic-gradient(from 120deg at 30% 10%, rgba(255, 255, 255, 0.16), transparent 35%, rgba(255, 255, 255, 0.08)),
+        linear-gradient(145deg, #0b0920 0%, #1d0d51 32%, #411c92 58%, #0d1334 100%);
+      min-height: calc(100vh - 60px);
+      padding: 18px 14px 28px;
+      color: #f9f7ff;
+      border-radius: 22px;
+      box-shadow: 0 30px 90px rgba(69, 10, 132, 0.42);
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .game-shell--purple {
+      background:
+        radial-gradient(circle at 14% 18%, rgba(255, 255, 255, 0.08), transparent 36%),
+        radial-gradient(circle at 86% 16%, rgba(255, 255, 255, 0.12), transparent 38%),
+        radial-gradient(120% 120% at 52% 8%, rgba(120, 119, 255, 0.4), rgba(43, 7, 120, 0.28)),
+        conic-gradient(from 90deg at 70% 14%, rgba(255, 255, 255, 0.08), transparent 36%, rgba(255, 255, 255, 0.05)),
+        linear-gradient(140deg, #0c0a22 0%, #1b0b45 30%, #5d22c5 62%, #100f3c 100%);
+    }
+    .game-shell::before {
+      content: "";
+      position: absolute;
+      inset: -40px;
+      background:
+        radial-gradient(60% 60% at 16% 32%, rgba(16, 185, 129, 0.28), transparent 40%),
+        radial-gradient(50% 50% at 80% 46%, rgba(236, 72, 153, 0.28), transparent 42%),
+        radial-gradient(70% 70% at 54% 82%, rgba(59, 130, 246, 0.18), transparent 36%);
+      opacity: 0.9;
+      filter: blur(20px);
+      mix-blend-mode: screen;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .game-shell::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(165deg, rgba(255, 255, 255, 0.14), transparent 36%),
+        radial-gradient(circle at 52% 18%, rgba(255, 255, 255, 0.12), transparent 44%),
+        radial-gradient(circle at 18% 82%, rgba(255, 255, 255, 0.08), transparent 35%),
+        linear-gradient(120deg, rgba(255, 255, 255, 0.06), transparent 62%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .game-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+      z-index: 1;
+    }
+    .game-back-btn {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+      backdrop-filter: blur(10px);
+    }
+    .game-stage-pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      font-size: var(--font-size-s);
+      letter-spacing: 0.02em;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #ede9fe;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
+    .game-title-lg {
+      font-size: 28px;
+      font-weight: 900;
+      margin: 18px 0 8px;
+      letter-spacing: -0.02em;
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+    .game-subtext {
+      margin: 0 0 14px;
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1.6;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .game-category-track {
+      display: flex;
+      gap: 22px;
+      overflow-x: auto;
+      padding: 20px 12px 30px;
+      scroll-snap-type: x mandatory;
+      position: relative;
+      z-index: 1;
+    }
+    .game-category-card {
+      --cat-accent: #7c3aed;
+      min-width: 88%;
+      max-width: 520px;
+      min-height: clamp(520px, 78vh, 720px);
+      scroll-snap-align: center;
+      border-radius: 30px;
+      padding: 24px 22px 22px;
+      color: #0f172a;
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.86) 35%, var(--cat-accent) 128%),
+        radial-gradient(circle at 86% 14%, rgba(255, 255, 255, 0.38), transparent 52%);
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 10px;
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+    }
+    .game-category-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background:
+        radial-gradient(120% 120% at 80% 10%, rgba(255, 255, 255, 0.44), transparent 32%),
+        radial-gradient(60% 60% at 20% 80%, rgba(255, 255, 255, 0.18), transparent 42%);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.85;
+    }
+    .game-cat-icon {
+      font-size: 26px;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.06);
+      margin-bottom: 6px;
+      position: relative;
+      z-index: 1;
+    }
+    .game-cat-title {
+      font-size: 26px;
+      font-weight: 900;
+      margin: 4px 0 6px;
+      letter-spacing: -0.02em;
+      position: relative;
+      z-index: 1;
+    }
+    .game-cat-copy {
+      margin: 6px 0 14px;
+      color: #0b1224;
+      line-height: 1.6;
+      position: relative;
+      z-index: 1;
+      font-size: 16px;
+      max-width: 520px;
+      opacity: 0.88;
+    }
+    .game-preview-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+    .game-preview-list li {
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 18px;
+      padding: 12px 12px;
+      font-weight: 700;
+      color: #0b1224;
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
+    }
+    .game-cat-count {
+      font-weight: 800;
+      color: #0b1224;
+      background: rgba(0, 0, 0, 0.06);
+      border-radius: 16px;
+      padding: 8px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      position: relative;
+      z-index: 1;
+      letter-spacing: 0.01em;
+    }
+    .game-cat-cta {
+      appearance: none;
+      border: 1px solid rgba(15, 23, 42, 0.6);
+      background: linear-gradient(135deg, #0f172a, #0b1224 40%, #0f172a 100%);
+      color: #f8fafc;
+      padding: 14px 18px;
+      border-radius: 999px;
+      font-weight: 800;
+      margin-top: 6px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.26);
+      position: relative;
+      z-index: 1;
+      letter-spacing: 0.01em;
+    }
+    .game-bottom-cta {
+      width: 100%;
+      margin-top: 6px;
+      padding: 14px;
+      border-radius: 14px;
+      background: #0b0f19;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-weight: 800;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+      position: relative;
+      z-index: 1;
+    }
+    .game-mode-wrap {
+      position: relative;
+      z-index: 1;
+      padding: 8px 4px 20px;
+      text-align: center;
+    }
+    .mode-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 18px;
+    }
+    .mode-btn {
+      flex: 1 1 140px;
+      min-width: 140px;
+      max-width: 220px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-weight: 800;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      backdrop-filter: blur(10px);
+    }
+    .mode-btn--primary {
+      background: #0b0f19;
+      border-color: rgba(0, 0, 0, 0.6);
+    }
+    .game-card-stage {
+      position: relative;
+      margin-top: 10px;
+      padding: 4px 0 12px;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .game-progress {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.9);
+      margin: 4px 0 10px;
+    }
+    .game-stack {
+      position: relative;
+      height: min(78vh, 760px);
+      min-height: 430px;
+      max-width: min(92vw, 640px);
+      width: 100%;
+      margin: 0 auto;
+      perspective: 1400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+      touch-action: none;
+      gap: 0;
+    }
+    .game-swipe-card {
+      position: absolute;
+      inset: 0;
+      border-radius: 26px;
+      padding: clamp(18px, 5.2vw, 30px);
+      background:
+        linear-gradient(155deg, #ffffff 0%, #f5f4ff 46%, #edebff 82%, var(--topic-accent, #7c3aed) 180%),
+        radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.75), transparent 48%);
+      color: #0f172a;
+      box-shadow: 0 38px 80px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(12, 18, 36, 0.06);
+      transition: transform 260ms var(--easing-standard), opacity 260ms var(--easing-standard);
+      transform: translate3d(0, calc(var(--card-offset, 0) * 16px), 0) scale(calc(1 - var(--card-offset, 0) * 0.035))
+        rotate(calc(var(--card-tilt, 0) * 1deg));
+      opacity: calc(1 - var(--card-offset, 0) * 0.16);
+      cursor: grab;
+      touch-action: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+      will-change: transform;
+      user-select: none;
+    }
+    .game-swipe-card--active {
+      z-index: 3;
+    }
+    .game-swipe-card:nth-child(2) {
+      z-index: 2;
+    }
+    .game-swipe-card:nth-child(3) {
+      z-index: 1;
+    }
+    .game-swipe-card.is-leaving {
+      pointer-events: none;
+      opacity: 0;
+      transition: transform 320ms var(--easing-accelerate), opacity 280ms var(--easing-accelerate);
+    }
+    .game-card-label {
+      font-weight: 800;
+      color: var(--topic-accent, #7c3aed);
+      margin-bottom: 10px;
+      letter-spacing: 0.01em;
+    }
+    .game-card-question {
+      font-size: 20px;
+      line-height: 1.6;
+      font-weight: 800;
+      color: #0b1224;
+    }
+    .game-swipe-hint {
+      text-align: center;
+      padding: clamp(28px, 8vh, 72px) clamp(18px, 6vw, 32px);
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px dashed rgba(255, 255, 255, 0.28);
+      border-radius: 24px;
+      color: #f8f7ff;
+      max-width: min(92vw, 560px);
+      width: 100%;
+      box-shadow: 0 28px 60px rgba(0, 0, 0, 0.35);
+    }
+    .game-stack--hint {
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0 0;
+    }
+    .game-controls-compact {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 14px;
+    }
+    .family-progress {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      font-size: var(--font-size-s);
+    }
+    .family-pill {
+      padding: 6px 10px;
+      border-radius: var(--radius-pill);
+      background: var(--color-surface-soft);
+      border: 1px dashed var(--color-border-subtle);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div id="intro-root" class="intro-root"></div>
+  <div class="app-shell app-shell--hidden">
+    <header class="c-header" id="app-header"></header>
+    <main id="app-main"></main>
+  </div>
+  <nav class="c-bottom-nav app-shell--hidden">
+    <div class="c-bottom-nav-inner" id="bottom-nav"></div>
+  </nav>
+  <!-- CORE / STATE / SERVICES -->
+  <script>
+    (function () {
+      "use strict";
+      const AdviceApp = (window.AdviceApp = window.AdviceApp || {});
+      AdviceApp.Core = (function () {
+        let _uid = 0;
+        function uid(prefix) {
+          _uid += 1;
+          return (prefix || "id") + "-" + Date.now().toString(36) + "-" + _uid.toString(36);
+        }
+        function deepClone(obj) {
+          if (obj == null || typeof obj !== "object") return obj;
+          try {
+            return structuredClone(obj);
+          } catch {
+            return JSON.parse(JSON.stringify(obj));
+          }
+        }
+        function safeParseJson(raw, fallback) {
+          try {
+            return JSON.parse(raw);
+          } catch {
+            return fallback;
+          }
+        }
+        return { uid, deepClone, safeParseJson };
+      })();
+      AdviceApp.EventBus = (function () {
+        const listeners = Object.create(null);
+        function on(ev, cb) {
+          if (!listeners[ev]) listeners[ev] = [];
+          listeners[ev].push(cb);
+        }
+        function emit(ev, payload) {
+          const arr = listeners[ev];
+          if (!arr) return;
+          arr.slice().forEach((cb) => {
+            try {
+              cb(payload);
+            } catch (e) {
+              console.error(e);
+            }
+          });
+        }
+        return { on, emit };
+      })();
+      AdviceApp.State = (function (bus, Core) {
+        const KEY = "advice.app.state.v1";
+        const defaultState = {
+          user: { id: null, name: "Гость", username: null },
+          theme: "light",
+          lifeScore: null,
+          scoresHistory: [],
+          subscription: "none",
+          currentView: "home",
+          lastCheckInDate: null,
+          lastCheckInScores: null,
+          lastCheckInReasons: null,
+          historyView: { open: false, selectedDate: null },
+          attention: { mind: null, sleep: null, money: null },
+          chat: { messages: [], psychologistName: null, isTyping: false },
+          sleep: { lastPlan: null, lastInputs: null },
+          finance: { income: null, plan: null, safetyFund: null },
+          game: {
+            activeTopic: null,
+            questionIndex: 0,
+            answers: {},
+            deck: {},
+            mode: null,
+            stage: "category",
+            showHint: true,
+          },
+          usageCounters: { psychologyDays: 0, sleepDays: 0, financeMonths: 0 },
+          meta: { createdAt: null, updatedAt: null, version: 1 },
+        };
+        let state = load();
+        function load() {
+          try {
+            const raw = localStorage.getItem(KEY);
+            if (!raw) {
+              const now = new Date().toISOString();
+              const base = Core.deepClone(defaultState);
+              base.meta.createdAt = now;
+              base.meta.updatedAt = now;
+              return base;
+            }
+            const parsed = Core.safeParseJson(raw, null);
+            if (!parsed || typeof parsed !== "object") throw new Error();
+            const merged = Object.assign({}, Core.deepClone(defaultState), parsed);
+            merged.meta = merged.meta || {};
+            merged.meta.version = 1;
+            merged.meta.updatedAt = merged.meta.updatedAt || new Date().toISOString();
+            merged.meta.createdAt = merged.meta.createdAt || merged.meta.updatedAt;
+            merged.finance = Object.assign({}, Core.deepClone(defaultState.finance), merged.finance || {});
+            merged.game = Object.assign({}, Core.deepClone(defaultState.game), merged.game || {});
+            return merged;
+          } catch {
+            const now = new Date().toISOString();
+            const base = Core.deepClone(defaultState);
+            base.meta.createdAt = now;
+            base.meta.updatedAt = now;
+            return base;
+          }
+        }
+        function save() {
+          try {
+            localStorage.setItem(KEY, JSON.stringify(state));
+          } catch {}
+        }
+        function notify() {
+          state.meta.updatedAt = new Date().toISOString();
+          save();
+          bus.emit("state:changed", getState());
+        }
+        function getState() {
+          return Core.deepClone(state);
+        }
+        function setState(patch) {
+          state = Object.assign({}, state, patch);
+          notify();
+        }
+        function updateSlice(key, patch) {
+          state[key] = Object.assign({}, state[key] || {}, patch);
+          notify();
+        }
+        function applyDailyCheckIn(scores, reasons, note) {
+          const { mind, sleep, money } = scores || {};
+          if (!mind || !sleep || !money) return;
+          const avg = (Number(mind) + Number(sleep) + Number(money)) / 3;
+          const today = new Date().toISOString().slice(0, 10);
+          const current = getState();
+          if (current.lastCheckInDate === today) return;
+          const snapshot = {
+            date: today,
+            scores: { mind: Number(mind), sleep: Number(sleep), money: Number(money) },
+            lifeScore: avg,
+            reasons: Core.deepClone(reasons || null),
+            note: note || "",
+          };
+          const history = (current.scoresHistory || []).concat([snapshot]);
+          const hv = Object.assign({}, current.historyView || {}, { selectedDate: snapshot.date });
+          setState({
+            lifeScore: avg,
+            scoresHistory: history,
+            lastCheckInDate: today,
+            lastCheckInScores: snapshot.scores,
+            lastCheckInReasons: snapshot.reasons,
+            historyView: hv,
+          });
+        }
+        function updateHistoryNote(date, noteText) {
+          if (!date) return;
+          const current = getState();
+          const history = (current.scoresHistory || []).map((item) => {
+            if (item.date !== date) return item;
+            return Object.assign({}, item, { note: noteText || "" });
+          });
+          setState({ scoresHistory: history });
+        }
+        return { getState, setState, updateSlice, applyDailyCheckIn, updateHistoryNote };
+      })(AdviceApp.EventBus, AdviceApp.Core);
+      AdviceApp.Services = (function (Core) {
+        const NAMES = ["Андрей", "Елена", "Алексей", "Мария", "Дмитрий", "Ольга", "Сергей", "Наталья"];
+        const MIN_DELAY = 40000;
+        const MAX_DELAY = 80000;
+        function randInt(min, max) {
+          return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        function randItem(arr) {
+          return arr && arr.length ? arr[randInt(0, arr.length - 1)] : null;
+        }
+        function randomPsychologistName() {
+          return randItem(NAMES) || "Андрей";
+        }
+        function sendToPsychologyAI(message, ctx) {
+          const psychologistName = (ctx && ctx.psychologistName) || randomPsychologistName();
+          const delay = MIN_DELAY + randInt(0, MAX_DELAY - MIN_DELAY);
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              resolve({
+                psychologistName,
+                text: "Спасибо, что поделились. Я прочитал ваше сообщение и хочу чуть глубже понять, что происходит. Можете описать, в какие моменты ощущения особенно обостряются?",
+              });
+            }, delay);
+          });
+        }
+        function buildSleepPlan(inputs) {
+          const safe = Object.assign(
+            { sleepWith: "alone", budgetLevel: "free", wakeTime: "07:00", noisePreference: "silence" },
+            inputs || {}
+          );
+          const [h, m] = (safe.wakeTime || "07:00").split(":").map((n) => Number(n) || 0);
+          const now = new Date();
+          const wake = new Date(now);
+          wake.setHours(h, m, 0, 0);
+          const target = new Date(wake.getTime() - 7.5 * 60 * 60 * 1000);
+          const windDown = new Date(target.getTime() - 45 * 60 * 1000);
+          const pad = (n) => (n < 10 ? "0" + n : "" + n);
+          const goToBed = pad(target.getHours()) + ":" + pad(target.getMinutes());
+          const windDownStart = pad(windDown.getHours()) + ":" + pad(windDown.getMinutes());
+          const envTip =
+            safe.sleepWith === "alone"
+              ? "Сделайте комнату максимально тихой и тёмной. За 30–40 минут до сна уберите яркий экран и снизьте освещение."
+              : "Согласуйте с тем, кто спит рядом, простые правила: минимум света и звука за 30–40 минут до сна, без громких уведомлений.";
+          const moneyTip =
+            safe.budgetLevel === "free"
+              ? "Фокус на бесплатных изменениях: стабильный режим, проветривание, тёплый душ перед сном, отсутствие телефона в кровати."
+              : "Можно постепенно инвестировать в комфорт: подушка и матрас под вас, плотные шторы, маска для сна, беруши — всё это даёт заметный эффект.";
+          const audioChoice =
+            safe.noisePreference === "water"
+              ? "Журчание водопада"
+              : safe.noisePreference === "white"
+              ? "Белый шум"
+              : safe.noisePreference === "melody"
+              ? "Спокойная мелодия"
+              : "Тишина";
+          const durationHours = 7.5;
+          const chronotypeLabel = safe.wakeTime <= "06:30" ? "Жаворонок" : safe.wakeTime >= "08:30" ? "Сова" : "Универсальный";
+          const timeline = [
+            { label: "-60 мин", text: "Успокоить освещение, переключиться на тихие задачи." },
+            { label: "-45 мин", text: "Чтение или тёплый душ, убрать телефон из спальни." },
+            { label: "-20 мин", text: "Установить будильник, надеть маску/беруши, проветрить." },
+            { label: "Отбой", text: `Лечь в ${goToBed}, включить выбранный звук: ${audioChoice}.` },
+          ];
+          const environmentChecklist = [
+            "Температура 18–21°C, плотные шторы или маска.",
+            "Подушка по вашей высоте, матрас без ям.",
+            "Телефон на беззвучном, уведомления выключены.",
+            "Бутылка воды и беруши рядом, чтобы не вставать.",
+          ];
+          const microHabits = [
+            "5 минут дневника перед сном для разгрузки головы.",
+            "2–3 минуты дыхания 4-7-8 или длинный выдох через рот.",
+            "Утренний свет в течение 10 минут для фиксации ритма.",
+          ];
+          return {
+            goToBed,
+            wakeTime: safe.wakeTime,
+            windDownStart,
+            envTip,
+            moneyTip,
+            audioChoice,
+            durationHours,
+            chronotypeLabel,
+            timeline,
+            environmentChecklist,
+            microHabits,
+            rawInputs: Core.deepClone(safe),
+          };
+        }
+        function buildFinancePlan(income, categories) {
+          const inc = Math.max(0, Number(income) || 0);
+          const cats = Object.assign(
+            { housing: 0, food: 0, transport: 0, utilities: 0, debts: 0, leisure: 0, other: 0 },
+            categories || {}
+          );
+          const parsedCats = Object.keys(cats).reduce((acc, key) => {
+            acc[key] = Math.max(0, Number(cats[key]) || 0);
+            return acc;
+          }, {});
+          const totalExpenses = Object.values(parsedCats).reduce((sum, v) => sum + v, 0);
+          const gap = inc - totalExpenses;
+          const overspend = inc > 0 && gap < 0;
+          if (!inc) {
+            return {
+              income: 0,
+              buckets: [],
+              comment: "Укажите ежемесячный доход и разложите траты по категориям, чтобы увидеть рекомендации.",
+              currentPattern: "Жильё, еда, транспорт, ЖКХ/долги, развлечения, прочее.",
+              savingsRate: 0,
+              essentialsRate: 0,
+              lifestyleRate: 0,
+              totalExpenses,
+              gap,
+              overspend,
+              categories: parsedCats,
+              recommendations: [],
+            };
+          }
+          const recommendedCaps = {
+            housing: inc * 0.35,
+            food: inc * 0.2,
+            transport: inc * 0.1,
+            utilities: inc * 0.1,
+            debts: inc * 0.15,
+            leisure: inc * 0.1,
+            other: inc * 0.05,
+          };
+          const adviceByCategory = {
+            housing: [
+              "Сравните текущую ставку аренды с рынком — можно пересмотреть договор или искать временно более компактный вариант.",
+              "Отдельно разберите ЖКХ: что даёт основной рост — отопление, вода или электричество, где можно снизить потребление.",
+            ],
+            food: [
+              "Переход на план меню + закупки 1–2 раза в неделю сокращает импульсивные траты.",
+              "Замените часть готовой еды на простые блюда: крупы, сезонные овощи, яйца, бобовые.",
+            ],
+            transport: [
+              "Откажитесь от такси в будни: проездной + пешие промежуточные участки дают экономию.",
+              "Сгруппируйте поездки и поручения в один маршрут, чтобы не кататься лишний раз.",
+            ],
+            utilities: [
+              "Проверьте тарифы на интернет/связь, отключите дублирующие подписки.",
+              "Сократите потребление: умные лампы, экономичные режимы стирки, контроль горячей воды.",
+            ],
+            debts: [
+              "Реструктуризация или перенос в банк с меньшей ставкой уменьшит ежемесячный платёж.",
+              "Сфокусируйтесь на одном долге снежным комом, остальные платите минимально.",
+            ],
+            leisure: [
+              "Жёсткий лимит на развлечения на неделю + кеш в конверте снижает перетраты.",
+              "Ищите бесплатные альтернативы: прогулки, спорт во дворе, библиотека вместо подписок.",
+            ],
+            other: ["Пересмотрите мелкие регулярные траты — комиссии, дубли подписок, покупки по привычке."],
+          };
+          const recommendations = Object.keys(parsedCats).reduce((acc, key) => {
+            const value = parsedCats[key];
+            const cap = recommendedCaps[key] || 0;
+            if (value <= 0) return acc;
+            const overRatio = cap ? value / cap : 0;
+            const isOver = overRatio > 1.05;
+            const base = adviceByCategory[key] || [];
+            const lead = isOver
+              ? `Категория «${key}» выбивается из нормы: ${value.toLocaleString("ru-RU")} ₽ при целевом уровне до ${Math.round(cap).toLocaleString("ru-RU")} ₽.`
+              : `Категория «${key}» в рамках нормы, оставьте короткий недельный лимит и контроль.`;
+            acc.push({ key, text: lead, tips: base });
+            return acc;
+          }, []);
+          const essentials = parsedCats.housing + parsedCats.food + parsedCats.transport + parsedCats.utilities + parsedCats.debts;
+          const lifestyle = parsedCats.leisure + parsedCats.other;
+          let save = inc - essentials - lifestyle;
+          const minSave = Math.round(inc * 0.1);
+          if (save < minSave) {
+            const delta = minSave - save;
+            const cutEss = Math.round(delta * 0.6);
+            const cutLife = delta - cutEss;
+            save = Math.max(0, save);
+            parsedCats.housing = Math.max(0, parsedCats.housing - Math.round(cutEss * 0.35));
+            parsedCats.food = Math.max(0, parsedCats.food - Math.round(cutEss * 0.25));
+            parsedCats.transport = Math.max(0, parsedCats.transport - Math.round(cutEss * 0.2));
+            parsedCats.leisure = Math.max(0, parsedCats.leisure - cutLife);
+          }
+          const buckets = [
+            {
+              key: "necessities",
+              label: "База (жильё, еда, транспорт, ЖКХ, долги)",
+              amount: essentials,
+              description: "Проверяем, не превышает ли 60–65% дохода.",
+            },
+            {
+              key: "lifestyle",
+              label: "Образ жизни + прочее",
+              amount: lifestyle,
+              description: "Подписки, развлечения, непредвиденные траты.",
+            },
+            {
+              key: "savings",
+              label: "Сбережения / подушка",
+              amount: Math.max(0, inc - essentials - lifestyle),
+              description: "Цель — минимум 10% от дохода, лучше 20%.",
+            },
+          ];
+          const ratio = buckets[2].amount / inc;
+          const essentialsRate = essentials / inc;
+          const lifestyleRate = lifestyle / inc;
+          const comment = overspend
+            ? `Траты превышают доход на ${Math.abs(gap).toLocaleString("ru-RU")} ₽. Начните с жилья/ЖКХ, еды и транспорта — там больше всего эффекта.`
+            : ratio >= 0.2
+            ? "Темп накоплений выше 20% — можно ускорять подушку или инвестиции."
+            : "Дотяните сбережения до 10–20% за счёт оптимизации жилья, еды, транспорта и подписок.";
+          return {
+            income: inc,
+            buckets,
+            comment,
+            currentPattern: "Данные разложены по категориям, продолжаем вести их раз в неделю.",
+            savingsRate: ratio,
+            essentialsRate,
+            lifestyleRate,
+            totalExpenses,
+            gap,
+            overspend,
+            categories: parsedCats,
+            recommendations,
+          };
+        }
+      function buildSafetyFund(current, expenses, months, monthlySave) {
+        const cur = Math.max(0, Number(current) || 0);
+        const exp = Math.max(0, Number(expenses) || 0);
+        const targetMonths = Math.max(1, Number(months) || 3);
+        const monthly = Math.max(0, Number(monthlySave) || 0);
+        const target = exp * targetMonths;
+        const gap = Math.max(0, target - cur);
+        const progress = target ? Math.min(1, cur / target) : 0;
+        const monthsToGoal = monthly > 0 && gap > 0 ? Math.ceil(gap / monthly) : null;
+        const status =
+          target === 0
+            ? "Укажите реальные траты, чтобы посчитать подушку."
+            : gap === 0
+            ? "Подушка собрана — можно переходить к инвестициям."
+            : monthly > 0
+            ? `Останется накопить ${gap.toLocaleString("ru-RU")} ₽ — это около ${monthsToGoal || 1} мес. при текущем темпе.`
+            : "Добавьте сумму ежемесячного взноса, чтобы понять сроки накопления.";
+        return {
+          current: cur,
+          expenses: exp,
+          targetMonths,
+          monthlySave: monthly,
+          target,
+          gap,
+          progress,
+          monthsToGoal,
+          status,
+        };
+      }
+      const gameQuestions = {
+        future: [
+          "Как выглядит ваш идеальный совместный день через пять лет?",
+          "Что вы хотите чувствовать, просыпаясь рядом через год?",
+          "Как вы поймёте, что ваш общий план работает?",
+          "Как вы распределите время между семьёй, карьерой и отдыхом в будущем?",
+          "Какие три общие цели вы ставите на ближайшие 12 месяцев?",
+          "Что поможет вам не потерять личные интересы, пока строите общее?",
+          "Как вы решите, где жить, если возникнет спор о городе или районе?",
+          "Какую традицию вы хотели бы ввести, чтобы отмечать маленькие победы?",
+          "Какие навыки каждому стоит прокачать ради общего будущего?",
+          "Как вы будете поддерживать друг друга в моменты карьерных поворотов?",
+          "Что должно остаться неизменным в ваших отношениях, даже если всё вокруг меняется?",
+          "Какой самый смелый сценарий совместной жизни вы готовы рассмотреть?",
+          "Что станет сигналом, что пора скорректировать план?",
+          "Как вы будете учиться новому вместе: курсы, путешествия, проекты?",
+          "Как вы хотите праздновать крупные и мелкие достижения как команда?",
+          "Как вы обсуждаете тему детей или расширения семьи без давления?",
+          "Какая финансовая подушка или страховка даст вам спокойствие о будущем?",
+          "Как вы будете поддерживать связь с друзьями и родными, если переедете?",
+          "Какой город или стиль жизни кажется вам вдохновляющим, а какой — точно нет?",
+          "Чем каждый готов пожертвовать ради общего плана, а что остаётся неприкосновенным?",
+          "Какую мечту вы хотите воплотить, пока есть силы и азарт?",
+          "Что поможет вам не выгореть, пока идёте к большой цели?",
+          "Как вы будете распределять личное время и время пары через несколько лет?",
+          "Как вы хотите отмечать годовщины и праздники в будущем?",
+          "Как вы примете решение, если вашим планам помешают внешние обстоятельства?",
+          "Какая роль каждого изменится первой, когда появятся дети, переезд или новый бизнес?",
+          "Какой общий проект вы бы запустили как творческий эксперимент?",
+          "Как вы решите, что пора замедлиться или наоборот ускориться?",
+          "Какой опыт вы хотите подарить себе как паре в ближайшие годы?",
+          "Как вы будете сохранять чувство новизны и приключения в долгосрочной перспективе?",
+          "Что поможет вам обоим чувствовать безопасность и свободу одновременно?",
+          "Какую карту пути вы бы повесили дома, чтобы видеть общее движение?",
+          "Как вы хотите встретить следующий кризис роста вместе?",
+          "Какая общая ценность должна вести вас при любых обстоятельствах?",
+          "Что бы вы добавили в свой быт, чтобы чаще чувствовать радость будущего?",
+          "Как вы видите баланс личных амбиций и семейных планов через три года?",
+          "Какую поддержку вам хочется получать, когда вы пробуете новое?",
+          "Какая часть вашего будущего уже наступает прямо сейчас?",
+          "Как вы будете распределять большие решения, чтобы оба чувствовали влияние?",
+          "Какой маленький шаг к мечте вы готовы сделать на этой неделе?",
+          "Как вы поймёте, что пора пересмотреть совместные цели?",
+          "Что вам нужно, чтобы чувствовать стабильность, двигаясь к переменам?",
+          "Как вы будете следить, что будущие планы не давят на настоящее?",
+          "Какой навык или привычку вы хотите вырастить в паре к следующему году?",
+          "Что вы хотите помнить о себе сегодняшних, когда будете смотреть назад?",
+          "Какая идея кажется безумной, но вас вдохновляет попробовать её вдвоём?",
+          "Как вы договоритесь, если один хочет переезда, а другой — закрепиться здесь?",
+          "Какие семейные традиции из ваших детств вы хотите сохранить, а какие обновить?",
+          "Как вы будете проверять, что ваши мечты остаются живыми, а не формальными?",
+          "Как вы разделите ответственность за принятие рисков и их последствия?",
+          "Какой общий ритуал поможет вам держать курс на долгосрочные цели?",
+          "Как вы будете поддерживать связь, если работа потребует разъездов?",
+          "Что должно появиться в вашем доме, чтобы вы чувствовали движение к мечте?",
+          "Как вы хотите отмечать маленькие шаги: ужин, прогулка, подарок себе?",
+          "Какой главный вопрос о будущем вы сейчас избегаете и почему?",
+          "Какой урок прошлого поможет вам строить будущее мудрее?",
+          "Как вы хотите распределять ответственность за эмоциональную и финансовую стабильность?",
+          "Что поможет вам оставаться гибкими, не теряя опоры?",
+          "Как вы будете заботиться о здоровье, чтобы выдерживать темп будущего?",
+          "Что вы хотите рассказать друзьям о вашей жизни через пять лет?",
+          "Какая мечта у каждого из вас требует поддержки партнёра?",
+          "Как вы сделаете так, чтобы планы не превращались в давление?",
+          "Как вы примете решение, если ваши карьерные траектории разойдутся?",
+          "Какую карту путешествий вы бы собрали для себя на ближайшие годы?",
+          "Как вы будете поддерживать романтику, когда появится больше обязательств?",
+          "Что даст вам чувство, что вы растёте как команда?",
+          "Как вы поговорите о будущем, если устали и хотите паузы?",
+          "Как вы хотите удивить себя через год?",
+          "Как вы решите, что пора менять работу или сферу, чтобы приблизиться к мечтам?",
+          "Что будет признаком, что ваш общий план слишком жёсткий?",
+          "Как вы хотите делиться новыми знаниями друг с другом?",
+          "Как вы будете принимать разные скорости роста каждого?",
+          "Как вы договариваетесь о приоритетах, когда возможностей слишком много?",
+          "Какой элемент приключения вы хотите оставить в долгосрочной стабильности?",
+          "Что вы хотите построить так, чтобы гордиться этим через десять лет?",
+          "Какую поддержку вы ждёте в момент, когда мотивация падает?",
+          "Как вы договоритесь, если мечта одного кажется рискованной для другого?",
+          "Как вы будете проверять, что идёте к тому будущему, которое действительно хотите?",
+          "Что даст вам ощущение приключения в обычном месяце?",
+          "Как вы хотите сохранять время на обучение, даже когда заняты?",
+          "Какой общекомандный девиз вам бы подошёл на год?",
+          "Как вы договоритесь о границах между личными и общими проектами?",
+          "Как вы хотите поддерживать любопытство друг к другу через годы?",
+          "Какой знак напоминал бы вам, что вы движетесь к важной цели?",
+          "Как вы будете планировать периоды отдыха, чтобы не перегореть?",
+          "Какую новую привычку вы хотите внедрить ради будущего здоровья пары?",
+          "Как вы будете сохранять чувство юмора, когда работаете над большими задачами?",
+          "Как вы договоритесь о том, что можно менять курс, если обстоятельства меняются?",
+          "Какой формат ежегодного обзора планов вам подойдёт?",
+          "Как вы хотите делиться вдохновением: общая доска желаний, плейлист, встречи?",
+        ],
+        money: [
+          "Какой финансовый буфер даст вам чувство спокойствия?",
+          "Какие траты для вас священны, а какие готовы пересмотреть?",
+          "Как вы делите общие и личные деньги, чтобы никто не чувствовал контроля?",
+          "Кто ведёт учёт и как сделать его прозрачным для обоих?",
+          "Как вы решаете вопрос крупных покупок и лимитов без споров?",
+          "Какой план у вас на случай падения дохода одного из вас?",
+          "Как вы обсуждаете кредиты, долги и инвестиции без стыда и давления?",
+          "Какая подписка или расход уйдёт первым, если нужно ужаться?",
+          "Как вы распределяете бюджет на отдых и удовольствие, чтобы оба были довольны?",
+          "Что вызывает больше всего напряжения при разговоре о деньгах?",
+          "Как вы обсуждаете подарки и помощь родителям или друзьям?",
+          "Есть ли сумма, которую можно тратить без согласования?",
+          "Как вы относитесь к разнице доходов внутри пары?",
+          "Какую цель по накоплениям ставите на ближайшие полгода?",
+          "Как изменится ваш бюджет, если появится ребёнок или питомец?",
+          "Какая покупка в прошлом научила вас говорить заранее?",
+          "Как вы отметите финансовый успех, чтобы это вдохновило, а не обесценило труд?",
+          "Что помогает вам не срываться в обвинения, когда речь о тратах?",
+          "Какую часть дохода вы готовы вкладывать в здоровье и обучение?",
+          "Как вы относитесь к идее общих инвестиций и уровню риска?",
+          "Какой формат бюджета вам психологически комфортен: жёсткий или гибкий?",
+          "Как вы распределите неожиданный доход или бонусы?",
+          "Какой расход стоит автоматизировать, чтобы не обсуждать его каждый раз?",
+          "Что для вас важнее сейчас: экономить или искать новые источники дохода?",
+          "Как вы договоритесь, если один хочет рискованных проектов, а другой — стабильности?",
+          "Как вы относитесь к общему финансовому календарю и регулярным ревизиям?",
+          "Какие денежные установки из семьи влияют на вас сейчас?",
+          "Как вы будете решать вопрос благотворительности или помощи другим?",
+          "Какой чек-лист для разговора о деньгах вы бы хотели иметь раз в месяц?",
+          "Как вы распределяете ответственность за счета, налоги и подписки?",
+          "Что поможет вам говорить о деньгах спокойно, даже когда их мало?",
+          "Какой совместный финансовый ритуал вам подошёл бы?",
+          "Как вы ведёте учёт наличных и безналичных трат?",
+          "Как вы решаете, в какой валюте или инструменте держать накопления?",
+          "Какой минимальный ежемесячный взнос в «фонд спокойствия» вы готовы делать?",
+          "Как вы согласовываете подарки друг другу и сюрпризы в бюджете?",
+          "Как вы планируете крупные ремонты или переезды без стресса для кошелька?",
+          "Какой самый полезный разговор о деньгах у вас был и почему?",
+          "Как вы готовитесь к возможным медицинским расходам?",
+          "Как вы распределите расходы на обучение или развитие каждого?",
+          "Как вы решаете, когда экономить время, а когда деньги?",
+          "Что помогает вам не сравнивать свои доходы с другими парами?",
+          "Как вы обсуждаете тему долгов родственникам или друзьям?",
+          "Как вы проверяете, что оба понимают текущее финансовое положение одинаково?",
+          "Какой сигнал означает, что пора уменьшить расходы?",
+          "Какой сигнал означает, что пора увеличить инвестиции?",
+          "Как вы договариваетесь о времени для обсуждения финансов, чтобы это не был сюрприз?",
+          "Как вы распределяете бонусы: на удовольствие, на подушку, на инвестиции?",
+          "Как вы решите, стоит ли открывать совместный счёт?",
+          "Что поможет вам обсуждать деньги без чувства контроля или стыда?",
+          "Как вы хотите учить детей или будущих детей обращаться с деньгами?",
+          "Как вы реагируете на импульсивные покупки партнёра?",
+          "Как вы выбираете благотворительные проекты, если хотите помогать?",
+          "Какой общий финансовый ориентир вас вдохновляет?",
+          "Как вы будете действовать, если кто-то из вас потеряет работу?",
+          "Как вы настроите уведомления или правила, чтобы не пропускать важные платежи?",
+          "Как вы договариваетесь о тратах на хобби?",
+          "Как вы относитесь к совместным кредитным картам или рассрочкам?",
+          "Какую финансовую цель вы хотите исполнить ради радости, а не рациональности?",
+          "Как вы обсуждаете риск мошенничества и безопасность счетов?",
+          "Как вы решите, если один хочет больше отдавать обществу, а другой — копить?",
+          "Какой ежеквартальный обзор поможет вам чувствовать контроль без тревоги?",
+          "Как вы договоритесь о тратах на подарки друг другу и семьям?",
+          "Как вы проверяете, что оба чувствуете справедливость в распределении средств?",
+          "Какие способы экономии вам кажутся приемлемыми, а какие — нет?",
+          "Как вы относитесь к совместным инвестиционным экспериментам?",
+          "Как вы будете отмечать закрытие долгов или накопление подушки?",
+          "Какой урок о деньгах из детства вы хотите переосмыслить вместе?",
+          "Какой финансовый совет вы хотели бы слышать от партнёра в трудный момент?",
+          "Как вы хотите обсуждать повышение или смену работы с точки зрения бюджета?",
+          "Как вы готовите подарки так, чтобы они радовали, а не тревожили кошелёк?",
+          "Как вы договариваетесь о лимитах на спонтанные покупки?",
+          "Какой вклад каждого в семейный бюджет стоит отметить чаще?",
+          "Как вы хотите подходить к страхованию и резервам на непредвиденное?",
+          "Как вы разделяете расходы на транспорт и передвижение?",
+          "Что помогает вам обсуждать недостающие суммы без стыда?",
+          "Как вы готовитесь к крупным сезонам расходов (праздники, отпуск)?",
+          "Как вы решаете, сколько инвестировать в комфорт дома?",
+          "Какой финансовый рубеж станет вашим общим праздником?",
+          "Как вы планируете пенсионные или долгосрочные накопления?",
+          "Как вы относитесь к финансовым экспериментациям в малых суммах?",
+          "Как вы договариваетесь о помощи друзьям или благотворительности?",
+          "Какой минимальный набор финансовых правил вы хотите закрепить письменно?",
+          "Как вы обсуждаете распределение премий или кэшбэков?",
+          "Какой резерв вы держите на обучение или смену карьеры?",
+          "Как вы договоритесь, если один хочет быстрее закрыть кредит, а другой копить?",
+          "Как вы делите ответственность за поиск выгодных предложений и скидок?",
+          "Что поможет вам сохранять финансовую прозрачность без микроменеджмента?",
+          "Какой ритуал проверки бюджета вы готовы делать еженедельно?",
+          "Как вы хотите отмечать даже небольшие улучшения финансовой дисциплины?",
+        ],
+        psychology: [
+          "Что помогает вам чувствовать себя в безопасности рядом друг с другом?",
+          "Как вы понимаете, что партнёр вас слышит, а не просто слушает?",
+          "Какие слова поддержки нужны вам чаще всего сейчас?",
+          "Как вы просите о помощи, чтобы не ощущать вины или слабости?",
+          "Как вы хотите, чтобы с вами говорили в тяжёлые моменты?",
+          "Какие ваши границы в общении легко задеть, и как этого избежать?",
+          "Что помогает вам восстанавливаться после сложного дня?",
+          "Когда вы чувствуете, что вас принимают без условий?",
+          "Как вы делитесь радостью так, чтобы другой почувствовал сопричастность?",
+          "Какая эмоция у вас сейчас на первом плане и почему?",
+          "Как вы замечаете, что тревога или усталость становится слишком большой?",
+          "Что помогает вам замедлиться и не реагировать резко?",
+          "Как вы понимаете, что партнёру нужно пространство?",
+          "Какой вопрос вам сложно задать, но он важен для близости?",
+          "Как вы говорите о ревности или неуверенности безопасно?",
+          "Какие ваши «эмоциональные кнопки» стоит знать партнёру?",
+          "Как вы предпочитаете получать обратную связь о своих действиях?",
+          "Что вам нужно, чтобы обсуждать сложные темы без защиты и нападения?",
+          "Как вы понимаете, что пора обратиться к психологу или коучу?",
+          "Какой маленький жест заботы мгновенно снижает ваше напряжение?",
+          "Как вы реагируете на слёзы или злость друг друга?",
+          "Как вы хотите отмечать эмоциональный прогресс?",
+          "Как вы говорите о своих потребностях, не обесценивая потребности партнёра?",
+          "Как вы договариваетесь об отдыхе от общения, если нужно побыть в тишине?",
+          "Что из прошлого опыта терапии или саморазвития помогло больше всего?",
+          "Как вы хотите обсуждать темы уязвимости и стыда?",
+          "Как вы заметите, что вы оба двигаетесь к более здоровой близости?",
+          "Что поможет вам обоим чаще чувствовать благодарность?",
+          "Как вы реагируете на критику и что поможет услышать её мягче?",
+          "Какой формат разговоров о чувствах для вас комфортен: прогулка, письмо, тихий вечер?",
+          "Какие ритуалы близости стоит ввести, чтобы поддерживать контакт?",
+          "Когда вам проще всего открываться и почему?",
+          "Как вы поддержите друг друга, если один переживает тяжёлый период?",
+          "Как вы хотите обозначать свои личные границы мягко и ясно?",
+          "Что помогает вам восстанавливать доверие после напряжения?",
+          "Как вы замечаете, что начинаете закрываться, и как попросить о поддержке?",
+          "Как вы говорите о своих ценностях, чтобы другой мог их уважать?",
+          "Какой вопрос о детских воспоминаниях помог бы вам понять друг друга глубже?",
+          "Как вы чувствуете заботу: через слова, действия, внимание или совместное время?",
+          "Что помогает вам сохранять уважение, даже когда вы раздражены?",
+          "Как вы хотите отмечать моменты, когда вам удалось понять чувства друг друга?",
+          "Как вы реагируете на шутки, которые задевают, и как об этом говорите?",
+          "Какой безопасный сигнал стоп вы можете придумать для сложных разговоров?",
+          "Как вы делитесь тем, что пугает или смущает, не чувствуя осуждения?",
+          "Что помогает вам чувствовать благодарность к партнёру чаще?",
+          "Как вы хотите напоминать друг другу, что вы в одной команде?",
+          "Как вы проговариваете ожидания, чтобы они не превращались в претензии?",
+          "Какой самый тёплый момент поддержки вы помните от партнёра?",
+          "Как вы справляетесь с чувством вины и что помогает его отпускать?",
+          "Как вы говорите о своих успехах, чтобы чувствовать гордость и разделение радости?",
+          "Какой вопрос стоит задавать друг другу каждую неделю, чтобы оставаться в контакте?",
+          "Как вы хотите обсуждать тему доверия: что его укрепляет, что ослабляет?",
+          "Что помогает вам замечать и называть свои эмоции точнее?",
+          "Как вы договариваетесь о времени для разговора, если кому-то тяжело?",
+          "Как вы хотите, чтобы с вами говорили, когда вы уязвимы?",
+          "Как вы понимаете, что пора сказать «мне нужно время на себя»?",
+          "Какой знак внимания от партнёра наполняет вас спокойствием?",
+          "Как вы обсуждаете различия в темпераменте или стиле общения?",
+          "Что помогает вам обоим чувствовать, что вас принимают такими, какие вы есть?",
+          "Как вы будете поддерживать эмоциональную связь на расстоянии?",
+          "Какой способ восстановления сил вам нужен чаще всего и знает ли об этом партнёр?",
+          "Как вы хотите отмечать моменты искренности и открытости?",
+          "Как вы научились говорить «нет» и что вам в этом помогает?",
+          "Как вы реагируете, когда партнёр занят и не может сразу ответить?",
+          "Какой разговор о чувствах вам запомнился как переломный?",
+          "Как вы будете работать с чувством тревоги вместе, если оно накрывает одного из вас?",
+          "Как вы хотите напоминать себе о ценности отношений в сложные дни?",
+          "Как вы хотите обсуждать изменения в ваших потребностях по мере роста отношений?",
+          "Как вы реагируете, если партнёр замыкается, и что помогает открыть разговор?",
+          "Как вы обсуждаете темы стыда или вины так, чтобы это было безопасно?",
+          "Какой способ расслабления вместе наполняет вас обоих?",
+          "Как вы хотите поддерживать осознанность: дневники, прогулки, общие чек-ин?",
+          "Как вы говорите о своей уязвимости, когда боитесь быть непонятыми?",
+          "Как вы хотите, чтобы партнёр напоминал вам о ваших сильных сторонах?",
+          "Как вы обсуждаете тему сравнения себя с другими?",
+          "Какой новый ритуал заботы о себе вы хотите попробовать вместе?",
+          "Как вы отмечаете моменты, когда смогли остановиться и выбрать мягкий ответ?",
+          "Как вы хотите говорить о своих мечтах, чтобы другой помог поверить в них?",
+          "Как вы реагируете, если партнёр просит больше внимания?",
+          "Как вы хотите делиться благодарностью друг другу каждый день?",
+          "Какой безопасный способ сказать «мне страшно» вам нужен?",
+          "Как вы поддерживаете эмоциональную устойчивость в периоды перемен?",
+          "Как вы отмечаете границу между конструктивной обратной связью и критикой?",
+          "Какой образ идеального вечера восстановления для вас обоих?",
+          "Как вы хотите обсуждать тему самооценки и её колебаний?",
+          "Как вы договариваетесь о времени без обсуждения проблем, только про радости?",
+          "Как вы будете реагировать, если у одного из вас сложный период терапии?",
+          "Какой вопрос вам хочется, чтобы партнёр задавал чаще?",
+          "Как вы хотите говорить о невербальных знаках усталости или тревоги?",
+          "Как вы готовитесь к трудным разговорам, чтобы они проходили мягче?",
+          "Какой способ переключения с напряжения на поддержку работает для вас лучше всего?",
+          "Как вы будете отслеживать свой эмоциональный климат как пары?",
+        ],
+        conflicts: [
+          "Что чаще всего запускает ваш конфликтный сценарий?",
+          "Какой сигнал означает, что пора сделать паузу?",
+          "Как вы возвращаетесь к разговору после ссоры?",
+          "Какие правила спора работают для вас двоих?",
+          "Как вы извиняетесь так, чтобы это было ощутимо для другого?",
+          "Что помогает вам успокоиться в пиковый момент?",
+          "Как вы договариваетесь о тоне и словах в споре?",
+          "Как остановить накопление претензий до взрыва?",
+          "Какая тема вам сложнее всего обсуждать без защиты?",
+          "Как вы хотите обозначать границы в конфликте?",
+          "Как вы решаете, что важнее: быть правым или услышанным?",
+          "Как вы поймёте, что спор ушёл в тупик и нужна пауза?",
+          "Как вы возвращаете чувство безопасности после острой ссоры?",
+          "Какие фразы вас мгновенно триггерят, и чем их заменить?",
+          "Как вы договариваетесь о времени и месте для сложного разговора?",
+          "Как вы решаете, к кому обратиться за помощью, если спор не решается?",
+          "Что помогает вам сохранять уважение, даже если позиции противоположные?",
+          "Как вы реагируете, когда партнёр молчит в конфликте?",
+          "Как вы просите перерыв, чтобы остыть, и как возвращаетесь?",
+          "Какие правила в споре непереговорны для каждого?",
+          "Как вы обозначаете, что тема зашла слишком далеко?",
+          "Как вы понимаете, что защищаетесь, а не слушаете?",
+          "Как вы обходитесь с сарказмом или шутками в споре?",
+          "Как вы делитесь эмоциями, а не обвинениями?",
+          "Как вы выбираете, какие споры действительно важны?",
+          "Как вы обсуждаете старые обиды, чтобы они не возвращались?",
+          "Как вы замечаете, что говорите громче, чем нужно, и как снижаете градус?",
+          "Как вы договариваетесь о справедливости: кто и что уступает?",
+          "Как вы хотите, чтобы вас поддержали после конфликта?",
+          "Как вы отмечаете прогресс: ссор меньше, слушаете лучше?",
+          "Какой сценарий примирения для вас работает лучше всего?",
+          "Как вы обсуждаете влияние стресса работы на споры дома?",
+          "Как вы решаете, когда подключать юмор, а когда нет?",
+          "Какой вопрос помогает вам понять корень конфликта?",
+          "Как вы разделяете эмоцию и факт в споре?",
+          "Как вы договариваетесь, что спорить можно, но нельзя обесценивать?",
+          "Что помогает вам помнить, что вы по одну сторону, даже когда несогласны?",
+          "Как вы реагируете на слёзы или на повышенный тон?",
+          "Какой компромисс для вас честный, а какой ощущается потерей?",
+          "Как вы решаете, когда обсуждать конфликт наедине, а когда с медиатором?",
+          "Как вы поддерживаете контакт взглядом или жестами в споре?",
+          "Как вы хотите завершать разговор, даже если согласия нет?",
+          "Что помогает вам не копить мелкие раздражения?",
+          "Как вы говорите о своих триггерах заранее?",
+          "Как вы хотите обозначать, что разговор задевает ваши ценности?",
+          "Какой язык уважения вы хотите сохранить, даже когда злитесь?",
+          "Как вы решаете, стоит ли поднимать конфликт сейчас или позже?",
+          "Как вы согласовываете ожидания после примирения?",
+          "Как вы учитесь на прошлом конфликте, чтобы не повторять сценарий?",
+          "Как вы обсуждаете влияние усталости или голода на тон разговора?",
+          "Как вы реагируете на критику и что поможет услышать её мягче?",
+          "Как вы хотите благодарить друг друга за готовность к диалогу?",
+          "Как вы различаете критику действия и критику личности?",
+          "Какой ритуал примирения вы могли бы ввести?",
+          "Как вы договариваетесь о правилах переписки, чтобы не усугублять спор?",
+          "Как вы обозначаете, что тема требует времени на обдумывание?",
+          "Какой вопрос помогает вам переключиться с обвинений на совместный поиск решения?",
+          "Как вы решаете, когда нужен компромисс, а когда можно попробовать оба подхода?",
+          "Как вы реагируете, если партнёр вспоминает старые ошибки?",
+          "Как вы хотите говорить о своих потребностях без ультиматумов?",
+          "Как вы договариваетесь о границах уважения при переписке и звонках?",
+          "Какой способ извинений вам кажется искренним?",
+          "Как вы показываете, что услышали друг друга после спора?",
+          "Как вы хотите отмечать моменты, когда удалось избежать конфликта?",
+          "Какой маленький шаг поможет сделать ваши споры мягче уже сегодня?",
+          "Как вы обсуждаете разницу в темпе принятия решений?",
+          "Какой вопрос помогает вам переключиться с обвинений на факты?",
+          "Как вы разделяете чувство усталости от темы и реальную готовность обсуждать?",
+          "Как вы хотите уведомлять друг друга, что разговор вас ранит?",
+          "Как вы договариваетесь о длительности сложного разговора?",
+          "Какой способ проверить, что вы правильно поняли позицию партнёра?",
+          "Как вы хотите извиняться, чтобы это было услышано сердцем?",
+          "Как вы обсуждаете конфликты из-за времени и расписания?",
+          "Какой жест поддержки во время спора вам нужен?",
+          "Как вы решаете, какие темы оставить до встречи с терапевтом?",
+          "Как вы хотите фиксировать договорённости после конфликта?",
+          "Как вы реагируете на тишину в ответ и как обозначаете свои чувства?",
+          "Какой план действий после крупной ссоры помогает вам восстановиться?",
+          "Как вы обсуждаете влияние социальных сетей и переписок на конфликты?",
+          "Как вы договариваетесь о правилах критики идей, а не личности?",
+          "Какой способ напомнить себе, что партнёр не враг, вы используете?",
+          "Как вы хотите говорить о повторяющихся конфликтах, чтобы не застревать?",
+          "Какой вопрос помогает вам найти общую цель в споре?",
+          "Как вы обсуждаете тон переписки, если он воспринимается резким?",
+          "Как вы решаете, что стоит отпустить тему ради мира?",
+          "Какой «тайм-аут» по времени и формату вам подходит?",
+          "Как вы хотите делиться эмоциональными триггерами заранее?",
+          "Как вы обсуждаете влияние культурных или семейных привычек на ваши споры?",
+          "Какой совместный ритуал примирения вы бы добавили?",
+          "Как вы будете отмечать прогресс в умении спорить мягко каждые пару месяцев?",
+        ],
+        boundaries: [
+          "Какие личные границы у вас самые важные и почему?",
+          "Сколько личного пространства вам нужно в отношениях?",
+          "Как вы обозначаете, что вам нужно время на себя?",
+          "Как вы договариваетесь о времени тишины и отдыха?",
+          "Какие темы вы не готовы обсуждать при других?",
+          "Что для вас значит уважение личных вещей?",
+          "Как вы разделяете общие и личные деньги без чувства контроля?",
+          "Как вы отмечаете границу между заботой и опекой?",
+          "Как вы реагируете, если партнёр нарушает вашу границу случайно?",
+          "Как вы хотите, чтобы партнёр предупреждал о визитах гостей или родных?",
+          "Какие привычки из прошлого вы хотите оставить личными?",
+          "Как вы обозначаете границы в работе, чтобы сохранить время для пары?",
+          "Как вы хотите договариваться о времени с друзьями без взаимных упрёков?",
+          "Как вы говорите о цифровых границах: пароли, переписки, соцсети?",
+          "Как вы реагируете, если партнёр делится личным разговором с кем-то ещё?",
+          "Как вы обсуждаете границы юмора и шуток?",
+          "Как вы обозначаете физические границы нежности, когда устали?",
+          "Как вы договариваетесь о границах с родителями и родственниками?",
+          "Как вы хотите обсуждать тему ревности, чтобы не давить?",
+          "Как вы замечаете, что граница нарушена, и как об этом говорите?",
+          "Какой язык просьб о пространстве для вас комфортен?",
+          "Как вы различаете границы и отдаление?",
+          "Что помогает вам доверять, когда у каждого есть личная территория?",
+          "Как вы хотите договариваться о времени без телефонов?",
+          "Как вы делите домашнее пространство, чтобы оно радовало обоих?",
+          "Как вы реагируете, если партнёр просит больше свободы, чем вам привычно?",
+          "Как вы обсуждаете границы сна и отдыха (когда ложиться, как просыпаться)?",
+          "Как вы хотите договариваться о темах, которые трогают старые травмы?",
+          "Как вы определяете, что граница слишком жёсткая и мешает близости?",
+          "Как вы обозначаете время для работы из дома, чтобы вас не отвлекали?",
+          "Как вы обсуждаете границы личных вещей: техника, одежда, записки?",
+          "Как вы хотите говорить о свободе встречаться с друзьями отдельно?",
+          "Как вы обсуждаете границы флирта и внимания к другим?",
+          "Что помогает вам не воспринимать просьбу о пространстве как отвержение?",
+          "Как вы договариваетесь о том, кто и как делится новостями о вас с другими?",
+          "Как вы обозначаете границы в публичных проявлениях чувств?",
+          "Как вы обсуждаете границы времени на хобби и спорт?",
+          "Как вы реагируете, если партнёр открывает темы, к которым вы не готовы?",
+          "Как вы хотите договариваться о совместных и отдельных праздниках?",
+          "Как вы говорите, что не готовы обсуждать тему прямо сейчас?",
+          "Какой сигнал поможет напомнить о границах без конфликта?",
+          "Как вы обсуждаете границы, связанные с работой допоздна?",
+          "Как вы хотите договариваться о том, кто может заходить в вашу комнату?",
+          "Что для вас значит честность, не нарушающая личное пространство?",
+          "Как вы хотите обсуждать границы снабжения советами или критикой?",
+          "Как вы реагируете, если партнёр просит больше автономии?",
+          "Как вы обсуждаете границы по теме здоровья и тела?",
+          "Как вы договариваетесь о правилах, когда живёте в гостях или принимаете гостей?",
+          "Как вы хотите, чтобы партнёр спрашивал согласие на новые привычки в быту?",
+          "Как вы обозначаете границу времени на восстановление после общения?",
+          "Как вы обсуждаете границы семейных бюджетов с родителями?",
+          "Какой ваш личный уголок дома и что он значит для вас?",
+          "Как вы договариваетесь о режиме тишины утром или ночью?",
+          "Как вы обсуждаете границы шеринга фото и историй о вашей жизни?",
+          "Как вы реагируете, если партнёр читает ваши заметки или дневник?",
+          "Как вы хотите обсуждать темы, которые вас пугают, без давления?",
+          "Как вы проверяете, что уважаете границы друг друга на практике?",
+          "Как вы договариваетесь о правилах общения с бывшими партнёрами?",
+          "Как вы хотите обозначать границы в совместных проектах, чтобы не смешивать роли?",
+          "Какой разговор о границах стоит повторять каждый квартал?",
+          "Как вы поймёте, что границы стали гибче и вам комфортно?",
+          "Что поможет вам уважать личные секреты без подозрений?",
+          "Как вы договоритесь о правилах для неожиданных гостей?",
+          "Как вы хотите обозначить границы в распределении времени с семьёй и друзьями?",
+          "Как вы реагируете, если партнёр шутит о ваших границах?",
+          "Какой общий принцип поможет вам быстро проверять согласие друг друга?",
+          "Как вы будете напоминать друг другу, что границы — это забота, а не отдаление?",
+          "Как вы хотите обсуждать границы рабочего времени и личных дел?",
+          "Какой способ напомнить о своих границах вам комфортен?",
+          "Как вы договариваетесь о времени на индивидуальные хобби вне дома?",
+          "Как вы реагируете, если партнёр просит больше тишины или уединения?",
+          "Как вы обсуждаете, кто и как может пользоваться вашей техникой?",
+          "Как вы договоритесь о правилах хранения общих и личных фотографий?",
+          "Какой формат разговоров о границах вам удобен: заранее или по факту?",
+          "Как вы обсуждаете ожидания от времени в гостях у друзей?",
+          "Как вы обозначаете границы для обсуждения рабочих тем дома?",
+          "Какой сигнал покажет, что граница нарушена, хотя никто не хотел?",
+          "Как вы договариваетесь о том, сколько личных историй делиться в соцсетях?",
+          "Как вы хотите обсуждать физические границы, если кто-то приболел или устал?",
+          "Как вы обсуждаете границы ответов на звонки и сообщения поздно вечером?",
+          "Какой общий принцип поможет решать новые пограничные ситуации без споров?",
+          "Как вы хотите договариваться о совместных подписках и аккаунтах?",
+          "Как вы обсуждаете границы, связанные с совместным бизнесом или проектом?",
+          "Как вы договариваетесь о времени без разговоров, только в тишине?",
+          "Какой вопрос поможет понять, что граница нуждается в пересмотре?",
+          "Как вы хотите обсуждать обновление границ каждые несколько месяцев?",
+          "Как вы реагируете, если партнёр случайно раскрывает вашу личную информацию?",
+          "Как вы обсуждаете, кто и как приглашает людей в ваш дом?",
+          "Какой способ напомнить о своих границах мягко работает лучше всего?",
+          "Как вы хотите обозначать границы расходов на личные удовольствия?",
+        ],
+        sex: [
+          "Какая атмосфера помогает вам чувствовать близость и расслабление?",
+          "Как вы хотите говорить о желаниях, чтобы не было неловко?",
+          "Что для вас значит чувство безопасности в интимности?",
+          "Как вы обсуждаете, когда хотите замедлиться или сделать паузу?",
+          "Как вы узнаёте, что партнёр в настроении, и как спрашиваете согласие?",
+          "Какие жесты заботы помогают вам настроиться на близость?",
+          "Как вы хотите обсуждать темы удовольствия без стыда?",
+          "Как вы реагируете, если не совпадает настроение на близость?",
+          "Как вы обозначаете свои границы в интимности мягко и ясно?",
+          "Какие разговоры о теле помогают вам чувствовать принятие?",
+          "Как вы хотели бы говорить о новых идеях, чтобы всем было комфортно?",
+          "Как вы даёте обратную связь, что вам нравится или нет?",
+          "Как вы хотите обсуждать частоту близости без давления?",
+          "Что помогает вам восстанавливаться после стресса, чтобы вернуться к близости?",
+          "Как вы поддерживаете ощущение нежности в повседневной суете?",
+          "Какой комплимент о вашей близости запомнился вам?",
+          "Как вы обсуждаете темы защиты и здоровья открыто?",
+          "Как вы хотите говорить о прошлом опыте, чтобы это не ранило?",
+          "Как вы реагируете, если партнёр не в ресурсе?",
+          "Как вы хотите обозначать стоп-сигналы и что они значат?",
+          "Как вы поддерживаете чувство новизны, не теряя уважения к границам?",
+          "Как вы обсуждаете ожидания перед романтическим вечером?",
+          "Как вы хотите благодарить друг друга за внимание и нежность?",
+          "Как вы решаете, когда обсуждать интимные темы, а когда просто быть рядом?",
+          "Как вы поддерживаете друг друга, если самооценка падает?",
+          "Как вы говорите о своих фантазиях, чтобы это было безопасно для обоих?",
+          "Как вы реагируете на смех или неловкость во время близости?",
+          "Как вы хотите распределять инициативу, чтобы она чувствовалась взаимной?",
+          "Какой ваш язык любви проявляется сильнее всего в интимности?",
+          "Как вы обсуждаете время на ласку и время на разговоры?",
+          "Как вы договариваетесь о тишине или музыке во время близости?",
+          "Как вы хотите, чтобы партнёр заботился о вашем комфорте до и после близости?",
+          "Как вы говорите, что сегодня не готовы, сохраняя тепло?",
+          "Какой ритуал нежности вы хотите сделать регулярным?",
+          "Как вы обсуждаете, что вам важно в прикосновениях?",
+          "Как вы хотите отмечать моменты особой близости?",
+          "Как вы решаете, что пора пробовать что-то новое?",
+          "Как вы говорите о своих страхах или стеснении в этой теме?",
+          "Как вы реагируете, если партнёр предлагает паузу или смену темпа?",
+          "Как вы обсуждаете тему времени и усталости, чтобы никто не чувствовал вины?",
+          "Как вы хотите заботиться о гигиене и атмосфере пространства?",
+          "Какой вопрос о ваших ощущениях вы давно хотели задать?",
+          "Как вы обозначаете, что вам важнее нежность, чем техника?",
+          "Как вы говорите о своём удовольствии без самоцензуры?",
+          "Как вы хотите обсуждать роль эмоций в вашей близости?",
+          "Как вы согласовываете интимность с циклом, здоровьем или графиком?",
+          "Какой жест партнёра даёт вам чувство защищённости?",
+          "Как вы хотите учиться друг у друга новому в интимности?",
+          "Как вы реагируете на комплименты о теле и грации?",
+          "Какой идеальный медленный вечер близости вы представляете?",
+          "Как вы обсуждаете, что не стоит повторять?",
+          "Как вы хотите отмечать маленькие открытия друг о друге?",
+          "Как вы договариваетесь о юморе в моменте близости?",
+          "Как вы хотите делиться ответственностью за атмосферу (свет, тепло, музыка)?",
+          "Какой разговор помог бы вам чувствовать себя ещё свободнее?",
+          "Как вы говорите о желании объятий без продолжения?",
+          "Как вы обсуждаете, сколько времени вам нужно, чтобы настроиться?",
+          "Как вы хотите реагировать, если что-то идёт не так?",
+          "Какой ваш любимый способ быть рядом без слов?",
+          "Как вы обсуждаете интимность в поездках или гостях?",
+          "Как вы хотите, чтобы партнёр узнавал, что вы хотите близости прямо сейчас?",
+          "Какой вопрос о согласии вам важно задать партнёру?",
+          "Как вы хотите говорить об эмоциональной стороне близости?",
+          "Как вы реагируете, если партнёр устал, но вы хотите тепла?",
+          "Как вы договариваетесь о времени для «просто полежать вместе»?",
+          "Какой знак внимания превращает обычный день в романтичный?",
+          "Как вы обсуждаете границы в шутках или разговорах на интимные темы?",
+          "Как вы хотите поддерживать искру, если живёте вместе давно?",
+          "Как вы говорите о своих предпочтениях, чтобы это звучало как приглашение, а не критика?",
+          "Как вы хотите обсуждать, что помогает вам расслабиться до близости?",
+          "Какой способ сказать «мне нужно замедлиться» вам комфортен?",
+          "Как вы договариваетесь о времени для близости при плотных графиках?",
+          "Как вы обсуждаете интимность в разные сезоны здоровья и настроения?",
+          "Какой ритуал заботы о теле вы хотите делать вместе?",
+          "Как вы говорите о том, что вам нужно больше эмоциональной связи перед близостью?",
+          "Как вы реагируете, если партнёр предлагает новую идею, и как обсуждаете границы?",
+          "Какой комплимент о внимательности партнёра вам особенно приятен?",
+          "Как вы хотите говорить о своих ожиданиях без давления на другого?",
+          "Какой вопрос о согласии стоит задавать чаще?",
+          "Как вы обсуждаете тему уязвимости в момент близости?",
+          "Какой формат обратной связи о комфорте вам удобнее: слова, жесты, договорённости заранее?",
+          "Как вы хотите отмечать моменты нежности, не связанные с сексом?",
+          "Как вы обсуждаете влияние стресса или усталости на ваше желание?",
+          "Какой сценарий идеального спокойного утра вместе вы бы устроили?",
+          "Как вы поддерживаете чувство уважения к границам после долгого времени вместе?",
+          "Как вы хотите, чтобы партнёр реагировал, если вы нервничаете?",
+          "Какой способ восстановить связь после недопонимания в интимности вам подходит?",
+          "Как вы обсуждаете интимность, когда в доме гости или семья?",
+          "Как вы хотите сохранять игру и лёгкость в близости?",
+          "Какой знак внимания даёт вам чувство «меня замечают и ценят»?",
+        ],
+        roles: [
+          "Как вы делите бытовые задачи сейчас и что бы улучшили?",
+          "Какая роль даётся вам легко, а какую вы берёте через силу?",
+          "Как вы обсуждаете смену ролей, если обстоятельства меняются?",
+          "Как вы решаете, кто принимает решение в незнакомой ситуации?",
+          "Как вы распределяете заботу о доме, чтобы это не казалось невидимой работой?",
+          "Как вы хотите отмечать, что роли выполняются честно?",
+          "Как вы реагируете, если кто-то делает задачу не так, как другому нравится?",
+          "Как вы договариваетесь о роли «инициатора» в планах и встречах?",
+          "Как вы распределяете эмоциональную работу: поздравления, напоминания, планы?",
+          "Как вы обсуждаете, кому проще говорить «нет» внешним запросам?",
+          "Как вы делитесь задачами по финансам, чтобы не перегружать одного?",
+          "Какую роль вы бы хотели примерить ради эксперимента?",
+          "Как вы реагируете, если чувствуете, что роль не ценится?",
+          "Как вы договариваетесь о роли поддержки в стрессовый период?",
+          "Как вы распределяете обязанности, если один учится или меняет карьеру?",
+          "Как вы обсуждаете роль ведущего и ведомого в разных ситуациях?",
+          "Как вы решаете, что пора перераспределить задачи?",
+          "Как вы договариваетесь о времени отдыха от ролей?",
+          "Какой вклад каждого в быт остаётся незамеченным и как это исправить?",
+          "Как вы обсуждаете внешние ожидания (родители, друзья) о ваших ролях?",
+          "Как вы распределяете задачи, если оба устали?",
+          "Как вы хотите отмечать, что роли выполнены и можно переключиться?",
+          "Какой ритуал поможет вам синхронизироваться по планам недели?",
+          "Как вы решаете, кто ведёт разговор с сервисами, врачами, службами?",
+          "Как вы распределяете ответственность за совместные решения?",
+          "Как вы договариваетесь о роли «хранителя традиций» и «носителя новизны»?",
+          "Как вы хотите говорить о роли в воспитании детей или питомцев?",
+          "Как вы реагируете, если партнёр берёт на себя слишком много?",
+          "Как вы поддержите друг друга при смене карьеры или потере работы?",
+          "Как вы договариваетесь, кто инициирует разговоры о деньгах, здоровье, планах?",
+          "Как вы обсуждаете, кто отвечает за отдых и совместные путешествия?",
+          "Как вы распределяете задачи по дому, чтобы каждый делал то, что у него лучше получается?",
+          "Как вы реагируете, если партнёр хочет больше лидерства или наоборот меньше?",
+          "Как вы хотите делегировать задачи друг другу без ощущения контроля?",
+          "Как вы договариваетесь о смене приоритетов, если приходит новый проект?",
+          "Как вы обсуждаете роль в кризисных ситуациях (болезнь, переезд)?",
+          "Как вы принимаете помощь извне, если своих сил не хватает?",
+          "Как вы решаете, кто отвечает за семейные связи и праздники?",
+          "Как вы хотите обозначать, что устали и вам нужно переложить задачу?",
+          "Как вы распределяете обязанности по ремонту, технике, покупкам?",
+          "Как вы договариваетесь, кто и как решает бытовые конфликты?",
+          "Какой способ благодарности за вклад вам приятен?",
+          "Как вы обсуждаете, если роли кажутся нечестными?",
+          "Как вы хотите документировать планы (чек-листы, календари) и кто за это отвечает?",
+          "Как вы распределяете заботу о здоровье каждого?",
+          "Какой баланс традиционных и гибких ролей вам комфортен?",
+          "Как вы обсуждаете приоритеты в течение недели и кто ведёт повестку?",
+          "Как вы хотите пересматривать роли раз в месяц или квартал?",
+          "Как вы договариваетесь о времени на личные проекты?",
+          "Как вы распределяете ответственность за домашний уют и атмосферу?",
+          "Как вы решаете, кто первым идёт на компромисс в споре о роли?",
+          "Как вы хотите поддерживать чувство команды, а не должностей?",
+          "Как вы реагируете, если партнёр нарушает обещанную роль?",
+          "Какой общий принцип поможет проверять честность разделения задач?",
+          "Как вы делаете ротацию задач, чтобы не застревать в одном и том же?",
+          "Как вы обсуждаете влияние усталости на выполнение ролей?",
+          "Как вы хотите отмечать, что распределение стало лучше?",
+          "Как вы договариваетесь о роли «хранителя памяти» (фото, хроника)?",
+          "Как вы распределяете интеллектуальную нагрузку: поиск информации, сравнение вариантов?",
+          "Как вы хотите обсуждать роли в совместных поездках и отдыхе?",
+          "Как вы реагируете, если чувствуете, что вас воспринимают как само собой разумеющееся?",
+          "Как вы договариваетесь о том, кто делает первый шаг к примирению?",
+          "Как вы будете подстраиваться, если графики сильно разные?",
+          "Как вы обсуждаете, какие роли хотите оставить за профессионалами (уборка, доставка)?",
+          "Как вы распределяете задачи, когда оба болеете или перегружены?",
+          "Какой способ сказать «мне нужна помощь» вам удобен?",
+          "Как вы хотите фиксировать договорённости о ролях, чтобы их помнить?",
+          "Как вы реагируете, если партнёр меняет решение по роли?",
+          "Как вы хотите праздновать моменты, когда вы сработали как отличная команда?",
+          "Какой способ обучать друг друга задачам вам удобен?",
+          "Как вы договариваетесь о замене, если кто-то уезжает?",
+          "Как вы обсуждаете роли в неожиданных ситуациях (форс-мажоры, отключения)?",
+          "Какой вклад вы хотели бы подчеркнуть у партнёра на этой неделе?",
+          "Как вы распределяете задачи, связанные с планированием будущего?",
+          "Как вы хотите отдавать приоритет задачам, если их слишком много?",
+          "Как вы обсуждаете роль в обучении или поддержке друг друга в хобби?",
+          "Какой знак «спасибо» за бытовую работу вам важен?",
+          "Как вы договариваетесь, кто следит за состоянием дома и мелкими поломками?",
+          "Как вы хотите распределять организацию встреч с друзьями?",
+          "Какой способ ротации задач между вами кажется честным?",
+          "Как вы обсуждаете роли в управлении документами и бюрократией?",
+          "Какой формат еженедельного созвона/чек-листа по делам вам подойдёт?",
+          "Как вы договариваетесь о роли «энергайзера», когда обоим тяжело?",
+          "Как вы обсуждаете, кому проще договариваться со службами и поставщиками?",
+          "Какой вклад в отношения вы считаете невидимым, но важным?",
+          "Как вы хотите распределять эмоциональную поддержку, чтобы не перегружать одного?",
+          "Как вы договариваетесь о роли наставника или ученика в новой теме?",
+          "Какой принцип поможет вам разделять ответственность и свободу одновременно?",
+          "Как вы хотите отмечать, что роли пересмотрены и всем стало легче?",
+        ],
+        past: [
+          "Какой момент детства сильнее всего влияет на вас сейчас?",
+          "Какая история из прошлого помогает вам понимать себя?",
+          "Что было самым смелым решением в вашей жизни?",
+          "Какой урок вы вынесли из предыдущих отношений или дружбы?",
+          "Какая семейная традиция вам дорога, а какую вы точно не повторите?",
+          "Как вы переживали расставания или потери, и что помогало?",
+          "Какое обещание себе прошлому вы бы сдержали сейчас?",
+          "Какой опыт работы или учёбы вас закалил?",
+          "Что вы считали успехом раньше и как это изменилось?",
+          "Какой поступок из прошлого вы бы сделали иначе?",
+          "Какую поддержку вы получили, когда не ждали?",
+          "Что в подростковом возрасте казалось важным, а теперь нет?",
+          "Как вы относились к деньгам в юности и что изменилось?",
+          "Какой момент заставил вас почувствовать взрослость?",
+          "Как вы учились просить о помощи раньше?",
+          "Какая привычка из прошлого до сих пор с вами и радует?",
+          "Как вы справлялись с завистью или сравнениями?",
+          "Как вы принимаете свои ошибки в ретроспективе?",
+          "Какой риск оправдался, а какой нет?",
+          "Что вы скрывали от родителей или друзей и почему?",
+          "Какое приключение прошлого напоминает вам о смелости?",
+          "Какой случайный совет изменил вашу траекторию?",
+          "Какие страхи из прошлого вы уже прожили?",
+          "Как вы рассказываете свою историю, когда знакомитесь с людьми?",
+          "Какое качество вы пронесли из прошлого и цените?",
+          "Что бы вы сказали себе 18-летнему?",
+          "Как вы понимаете, что отпустили старую обиду?",
+          "Какой город или место хранит вашу важную память?",
+          "Какой смешной случай из прошлого до сих пор радует?",
+          "Какой навык вы получили неожиданно и он пригодился?",
+          "Что в прошлом вы считали неудачей, а теперь — опытом?",
+          "Какой момент сделал вас мягче или строже?",
+          "Как вы рассказываете партнёру о сложных частях своей биографии?",
+          "Какой школьный или университетский опыт вы бы повторили?",
+          "Как вы переживали первый большой успех?",
+          "Какой урок вы вынесли из первой серьёзной ответственности?",
+          "Что из вашего детства вы хотели бы подарить будущим детям?",
+          "Какой разговор с родителями запомнился вам больше всего?",
+          "Как вы справлялись с чувством одиночества в прошлом?",
+          "Какое хобби из прошлого вы бы хотели вернуть?",
+          "Как вы относились к риску в юности и как сейчас?",
+          "Какой момент из прошлого помогает вам верить в себя?",
+          "Как вы хотите, чтобы ваш партнёр понимал ваше происхождение и корни?",
+          "Как вы учились дружбе и что вас этому научило?",
+          "Какой урок из прошлых ошибок вы считаете самым ценным?",
+          "Как вы решали конфликты раньше и чему это научило?",
+          "Какое письмо или сообщение из прошлого вы бы себе отправили?",
+          "Как вы переживали переезд или смену школы/работы?",
+          "Какой фильм или книга в прошлом на вас сильно повлияли?",
+          "Какой навык вы получили благодаря наставнику или другу?",
+          "Как вы относились к авторитетам раньше и как сейчас?",
+          "Какой момент из прошлого стал поворотным в понимании себя?",
+          "Как вы научились заботиться о своём здоровье?",
+          "Какой случай научил вас просить о помощи?",
+          "Как вы реагировали на критику в юности?",
+          "Какой семейный миф или история вы бы хотели уточнить?",
+          "Какое воспоминание приносит вам покой?",
+          "Как вы отпускаете незавершённые истории?",
+          "Какой урок из спортивного или творческого опыта вы сохранили?",
+          "Как вы справлялись с завышенными ожиданиями?",
+          "Какой момент научил вас быть мягче к себе?",
+          "Как вы относились к планам в прошлом и что изменилось?",
+          "Какой человек из прошлого оказал на вас доброе влияние?",
+          "Какой совет вы бы не хотели слышать снова?",
+          "Как вы говорите о своём прошлом так, чтобы партнёр чувствовал участие?",
+          "Какой эпизод вы бы хотели снять как фильм?",
+          "Как вы научились уважать чужие границы в прошлом?",
+          "Какой разговор из детства вам хочется пересказать партнёру?",
+          "Какой запах или звук мгновенно возвращает вас в прошлое?",
+          "Какая поездка из юности оставила тёплый след?",
+          "Как вы впервые поняли, что хотите серьёзных отношений?",
+          "Какой урок вы вынесли из первых заработков?",
+          "Какое дружеское предательство научило вас чему-то важному?",
+          "Какой учитель или наставник повлиял на вас сильнее всего?",
+          "Как вы пережили самый странный день в своей жизни?",
+          "Какой смелый шаг вы сделали, хотя боялись?",
+          "Что из ваших прошлых интересов партнёр ещё не знает?",
+          "Как вы справлялись с тем, что казалось провалом, но обернулось опытом?",
+          "Какой разговор с самим собой помог вам меняться?",
+          "Как вы относились к семейным правилам в детстве и что изменилось?",
+          "Какой подарок из прошлого вы храните до сих пор?",
+          "Какой случай научил вас заботиться о друзьях?",
+          "Как вы впервые осознали свои границы?",
+          "Какой момент помог вам поверить в свои таланты?",
+          "Как вы переживали переезды или смену культурной среды?",
+          "Какой урок дала вам первая самостоятельная поездка?",
+          "Какое воспоминание о доме вы хотите перенести в нынешнюю жизнь?",
+          "Как вы думаете, какой ваш прошлый выбор удивит партнёра?",
+          "Какой эпизод из прошлого лучше всего показывает ваш характер?",
+        ],
+        dreams: [
+          "О чём вы мечтаете как пара в долгосрочной перспективе?",
+          "Какой страх чаще всего всплывает при разговорах о будущем?",
+          "Какую мечту вы откладываете и почему?",
+          "Как вы реагируете на страх провала в важных планах?",
+          "Какой совместный проект вас вдохновляет?",
+          "Что должно случиться, чтобы вы решились на большой риск?",
+          "Какая картина идеальной жизни кажется вам обоим реальной?",
+          "Чего вы боитесь потерять, если мечта сбудется?",
+          "Какой страх вы готовы проработать вместе?",
+          "Какая смелая цель кажется недостижимой, но цепляет?",
+          "Как вы хотите отмечать прогресс по мечтам?",
+          "Какой ресурс вам нужен, чтобы приблизиться к мечте?",
+          "Как вы поддержите друг друга, если страх накроет?",
+          "Что помогает вам не сдаваться, когда мечта кажется далёкой?",
+          "Как вы хотите обсуждать новые идеи, чтобы никто не чувствовал оценку?",
+          "Какая мечта из детства всё ещё жива?",
+          "Как вы будете принимать решения, если ваши мечты разойдутся?",
+          "Что даст вам чувство смысла, даже если мечта изменится?",
+          "Какая маленькая версия мечты возможна уже сейчас?",
+          "Какой страх о деньгах, здоровье или времени чаще всего мешает мечтам?",
+          "Как вы хотите балансировать между безопасностью и смелостью?",
+          "Как вы поймёте, что мечта перестала быть вашей?",
+          "Какой новый опыт вы хотите подарить друг другу?",
+          "Какой страх вы бы хотели разделить, чтобы он стал легче?",
+          "Как вы договоритесь, если один хочет путешествовать, а другой — стабильности?",
+          "Какую поддержку вы ждёте во время сомнений?",
+          "Как вы представляете свой идеальный день мечты?",
+          "Какой сценарий «что если всё получится» вас вдохновляет?",
+          "Какой сценарий «что если не получится» вы готовы прожить?",
+          "Какой список желаний вы бы составили на ближайший год?",
+          "Как вы отметите смелый шаг навстречу мечте?",
+          "Какой страх вы уже преодолели, и что помогло?",
+          "Какой совместный ритуал поможет держать мечты в фокусе?",
+          "Как вы хотите, чтобы мечты вписывались в вашу реальную занятость?",
+          "Какой самый дерзкий план вы бы попробовали без страха оценки?",
+          "Как вы реагируете на чужой успех: вдохновляет или давит?",
+          "Как вы хотите отмечать промежуточные победы, а не только финал?",
+          "Какой внутренний критик мешает вам двигаться к мечте?",
+          "Как вы будете поддерживать друг друга, если мечта потребует времени порознь?",
+          "Как вы решите, какую мечту реализовать первой?",
+          "Что поможет вам верить в мечту, когда ресурсов мало?",
+          "Как вы договоритесь о бюджете и времени на смелые шаги?",
+          "Какой страх связан с потерей контроля, и как его смягчить?",
+          "Как вы хотите делиться вдохновением: доски, списки, заметки?",
+          "Как вы отследите, что мечта до сих пор зажигает, а не выматывает?",
+          "Какой маленький эксперимент приблизит вас к большой цели?",
+          "Как вы поддержите друг друга, если кто-то решится на паузу ради мечты?",
+          "Как вы хотите отмечать, что мечта стала реальностью, чтобы это не прошло мимо?",
+          "Какой страх вы готовы отпустить уже сегодня?",
+          "Как вы договоритесь, если мечты идут вразрез с ожиданиями близких?",
+          "Как вы хотите заботиться о здоровье, пока идёте к амбициозным планам?",
+          "Какой пункт из списка желаний вы хотите сделать традицией?",
+          "Как вы обсуждаете мечты, чтобы ни один из вас не чувствовал давления?",
+          "Какой образ будущего дома или места вдохновляет вас обоих?",
+          "Как вы хотите праздновать рискованный шаг, даже если он не идеален?",
+          "Какой страх говорит голосом прошлого опыта, и что ему ответите?",
+          "Как вы будете держать мечты живыми, если день сурка затягивает?",
+          "Какой новый навык вам нужен для реализации мечты?",
+          "Как вы хотите поддерживать друг друга, если мотивация временно исчезла?",
+          "Какой способ визуализации мечты вам ближе: карта, плейлист, фото?",
+          "Как вы договоритесь, если мечта требует переезда?",
+          "Какой внутренний ресурс вам нужно беречь в пути к мечте?",
+          "Как вы хотите благодарить друг друга за смелость мечтать?",
+          "Какой смелый навык вы хотите освоить ради мечты?",
+          "Как вы обсуждаете риск усталости на пути к большой цели?",
+          "Какой маленький шаг вы можете сделать уже завтра?",
+          "Как вы будете отмечать прогресс раз в месяц?",
+          "Какой список поддерживающих фраз вы бы составили друг для друга?",
+          "Как вы решите, когда мечту стоит отпустить?",
+          "Как вы хотите визуализировать путь: карта, таймлайн, ритуал?",
+          "Какой совместный символ мечты вы бы носили с собой?",
+          "Как вы обсуждаете, кого стоит привлечь для помощи?",
+          "Какой самый добрый сценарий развития событий вы представляете?",
+          "Как вы будете делиться результатами с близкими?",
+          "Какой страх потери времени мешает вам начать?",
+          "Как вы хотите поддерживать дисциплину без жёсткого давления?",
+          "Какой запасной план вам нужен для спокойствия?",
+          "Как вы договоритесь о роли каждого в реализации мечты?",
+          "Какой сигнал скажет вам, что пора ускориться?",
+          "Какой опыт из прошлых проектов поможет вам сейчас?",
+          "Как вы хотите праздновать смелые попытки, даже если они не идеальны?",
+          "Какой ресурс (деньги, время, энергия) надо охранять особенно тщательно?",
+          "Как вы договариваетесь о приоритизации мечты среди других дел?",
+          "Какой вдохновляющий пример извне вы хотите обсудить вместе?",
+          "Как вы будете поддерживать веру в мечту, если окружающие сомневаются?",
+          "Какой самый простой вариант мечты вы можете реализовать уже в этом месяце?",
+          "Как вы хотите фиксировать маленькие победы: фото, записи, сувениры?",
+          "Какой разговор вам нужен, чтобы почувствовать решимость?",
+          "Как вы договоритесь о днях или часах, посвящённых только мечтам?",
+          "Какой страх касается отношения друг к другу, если мечта потребует жертв?",
+          "Как вы хотите делиться вдохновением, когда его стало меньше?",
+          "Какой новый опыт вы хотите добавить, чтобы мечта не превратилась в рутину?",
+          "Как вы будете пересматривать мечту, если меняются ваши ценности?",
+          "Какой поддерживающий ритуал утром или вечером поможет держать фокус?",
+          "Как вы хотите отмечать завершение этапов, а не только финал?",
+          "Какой мотивирующий вопрос вы хотите задавать себе каждую неделю?",
+          "Как вы договоритесь о том, кого попросить о советах, а кого не слушать?",
+        ],
+      };
+      const GAME_TOPICS = [
+        { key: "future", title: "Будущее пары", tagline: "Сценарии, цели и перемены", accent: "#a855f7", emoji: "🌅" },
+        { key: "money", title: "Деньги вдвоём", tagline: "Бюджет, буфер и правила", accent: "#f97316", emoji: "💰" },
+        { key: "psychology", title: "Психологическая близость", tagline: "Эмоции, поддержка, контакт", accent: "#7c3aed", emoji: "🧠" },
+        { key: "conflicts", title: "Конфликты", tagline: "Безопасно спорить и мириться", accent: "#6366f1", emoji: "⚡️" },
+        { key: "boundaries", title: "Границы", tagline: "Свобода и уважение", accent: "#22c55e", emoji: "🛡️" },
+        { key: "sex", title: "Секс", tagline: "Честно, мягко, с заботой", accent: "#ec4899", emoji: "💜" },
+        { key: "roles", title: "Роли в отношениях", tagline: "Кто за что и как договариваться", accent: "#0ea5e9", emoji: "🤝" },
+        { key: "past", title: "Прошлый опыт", tagline: "Истории, уроки, опора", accent: "#f59e0b", emoji: "📜" },
+        { key: "dreams", title: "Мечты и страхи", tagline: "Смелые планы и опоры", accent: "#8b5cf6", emoji: "🌙" },
+      ];
+      function getGameTopics() {
+        return GAME_TOPICS.map((topic) =>
+          Object.assign({}, topic, { questions: (gameQuestions[topic.key] || []).slice() })
+        );
+      }
+      function getGameQuestionBank() {
+        return Core.deepClone(gameQuestions);
+      }
+      return { randomPsychologistName, sendToPsychologyAI, buildSleepPlan, buildFinancePlan, buildSafetyFund, getGameTopics, getGameQuestionBank };
+    })(AdviceApp.Core);
+    })();
+  </script>
+  <!-- UI COMPONENTS -->
+  <script>
+    (function () {
+      "use strict";
+      const AdviceApp = window.AdviceApp;
+      const State = AdviceApp.State;
+      const Services = AdviceApp.Services;
+      AdviceApp.UI = (function () {
+        const Components = {};
+        let attentionChatAnimated = false;
+        const UI_KNOWN_VIEWS = ["home", "menu", "profile", "chat", "sleep", "finance", "family", "history", "game"];
+        function getQuestionLabelUI(kind) {
+          switch (kind) {
+            case "mind":
+              return "Как вы себя чувствуете в психологическом плане?";
+            case "sleep":
+              return "Как прошёл ваш сон?";
+            case "money":
+              return "Как у вас с финансами сегодня?";
+            default:
+              return kind;
+          }
+        }
+        function escapeHtml(str) {
+          return (str || "").replace(/[&<>"']/g, (ch) => {
+            const map = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+            return map[ch] || ch;
+          });
+        }
+        function formatDateShort(dateStr) {
+          if (!dateStr) return "";
+          const d = new Date(dateStr + "T00:00:00");
+          if (isNaN(d.getTime())) return dateStr;
+          const today = new Date();
+          const todayStr = today.toISOString().slice(0, 10);
+          const y = new Date();
+          y.setDate(today.getDate() - 1);
+          const yStr = y.toISOString().slice(0, 10);
+          const iso = d.toISOString().slice(0, 10);
+          if (iso === todayStr) return "сегодня";
+          if (iso === yStr) return "вч.";
+          const wds = ["вс", "пн", "вт", "ср", "чт", "пт", "сб"];
+          return wds[d.getDay()];
+        }
+        function lifeMood(score) {
+          if (score == null || isNaN(score)) return "Как только вы пройдёте первый чек-ин, здесь появится индекс и динамика.";
+          if (score >= 4.3) return "Сейчас у вас очень высокий субъективный уровень качества жизни. Важно поддерживать этот уровень без выгорания.";
+          if (score >= 3.6) return "В целом вы держитесь на хорошем уровне. Есть точки роста, и мы аккуратно подсветим, где легче всего усилить эффект.";
+          if (score >= 2.7) return "Субъективно всё ощущается средне. Это нормальная точка старта, когда уже есть смысл системно работать с психикой, сном и деньгами.";
+          if (score >= 1.8) return "Сейчас вам непросто. Наша задача — вытащить из минуса, стабилизировать сон и снизить нагрузку на психику.";
+          return "Похоже, сейчас очень тяжёлый период. Мы будем выстраивать план максимально бережно, шаг за шагом.";
+        }
+        function percentileText(score) {
+          if (score == null || isNaN(score)) return "";
+          const p = Math.round((score / 5) * 100);
+          const cl = Math.max(1, Math.min(99, p));
+          return `Вы примерно в ${cl}-м перцентиле относительно собственного максимального состояния.`;
+        }
+        function scoreSeverity(score) {
+          if (score == null || isNaN(score)) {
+            return { tier: "neutral", label: "Нет оценки за сегодня", border: "var(--color-border-subtle)", bg: "rgba(148, 163, 184, 0.16)" };
+          }
+          const v = Number(score);
+          if (v >= 4.5) {
+            return { tier: "good", label: "Сильный день", border: "#16a34a", bg: "rgba(22, 163, 74, 0.20)" };
+          }
+          if (v >= 3.5) {
+            return { tier: "ok", label: "Нормальный день", border: "#f59e0b", bg: "rgba(245, 158, 11, 0.22)" };
+          }
+          return { tier: "bad", label: "Тяжёлый день", border: "#ef4444", bg: "rgba(239, 68, 68, 0.24)" };
+        }
+        function thermoColor(score) {
+          const min = 0,
+            max = 5;
+          const val = Math.max(min, Math.min(max, Number(score) || 0));
+          const ratio = val / max;
+          const r = Math.round(255 - ratio * 155);
+          const g = Math.round(60 + ratio * 150);
+          const color = `rgb(${r}, ${g}, 90)`;
+          const darker = `rgb(${Math.max(0, r - 35)}, ${Math.max(0, g - 25)}, 70)`;
+          return { start: color, end: darker };
+        }
+        function renderAttentionCard(s) {
+          const att = s.attention || {};
+          const keys = ["mind", "sleep", "money"];
+          const labels = { mind: "Психика", sleep: "Сон", money: "Финансы" };
+          let bubbleIndex = 1;
+          const bubbles = keys
+            .map((key) => {
+              const slot = att[key];
+              if (!slot || !slot.reasons || !slot.reasons.length) return "";
+              const chips = slot.reasons.map((r) => `<span class="attention-chip">${r}</span>`).join("");
+              const html = `<div class="attention-bubble" style="--bubble-index:${bubbleIndex};"> <div class="attention-bubble-header"> <div class="attention-item-title">${labels[key] || key}</div> <div class="attention-bubble-score">${slot.score || "—"} ★</div> </div> <div class="attention-chips">${chips}</div> </div>`;
+              bubbleIndex += 1;
+              return html;
+            })
+            .filter(Boolean)
+            .join("");
+          if (!bubbles) return "";
+          const animate = !attentionChatAnimated;
+          attentionChatAnimated = true;
+          const introBubble = `<div class="attention-bubble attention-bubble--note" style="--bubble-index:0;"> Зафиксировали слабые места. Вернёмся к ним в рекомендациях. </div>`;
+          return `<section class="c-card attention-card"> <div class="section-title">Точки внимания</div> <div class="section-sub"> Что именно тянет вниз каждое направление — мы сохранили это как переписку. </div> <div class="attention-chat ${animate ? "attention-chat--intro" : ""}"> ${introBubble} ${bubbles} </div> </section>`;
+        }
+        function renderBackRow() {
+          return `<div class="back-row"> <button class="back-button" data-action="nav-back"><span>←</span><span>Назад</span></button> </div>`;
+        }
+        function renderCheckInEcho(s) {
+          const scores = s.lastCheckInScores || null;
+          const reasons = s.lastCheckInReasons || null;
+          if (!scores) {
+            return `<section class="c-card"> <div class="section-title">Ваши ответы</div> <div class="section-sub">Как только вы пройдёте опрос, здесь появятся оценки и причины.</div> </section>`;
+          }
+          const labels = {
+            mind: "Психика",
+            sleep: "Сон",
+            money: "Финансы",
+          };
+          const rows = ["mind", "sleep", "money"]
+            .map((key) => {
+              const score = scores[key];
+              const chips = reasons && reasons[key] && reasons[key].length
+                ? reasons[key].map((r) => `<span class="chip">${r}</span>`).join("")
+                : `<span class="chip">Причины не выбраны</span>`;
+              return `<div class="history-row" style="gap:12px;"> <div> <div class="history-row-title">${labels[key] || key}</div> <div class="history-row-sub">${getQuestionLabelUI(key)}</div> </div> <div class="history-row-score">${score || "—"}★</div> </div> <div class="chips-row" style="margin-top:6px;">${chips}</div>`;
+            })
+            .join("<div style='height:8px;'></div>");
+          return `<section class="c-card"> <div class="section-title">Ваши ответы</div> <div class="section-sub">Используем их, чтобы строить рекомендации в чатах, сне и финансах.</div> ${rows} </section>`;
+        }
+        Components.renderHeader = (s) => {
+          const initials = (s.user.name || "Гость").slice(0, 1).toUpperCase();
+          const sub =
+            s.subscription === "pro"
+              ? "PRO · психика, сон, деньги"
+              : s.subscription === "standard"
+              ? "STANDARD · психологическая поддержка"
+              : "Демо-режим · без подписки";
+          const chip = s.lifeScore != null ? `Индекс дня · ${s.lifeScore.toFixed(1)} / 5` : "Индекс дня ещё не рассчитан";
+          return `<div class="c-header-left"> <div class="avatar">${initials}</div> <div> <div class="c-header-title-main">ADVICE</div> <div class="c-header-title-sub">${sub}</div> </div> </div> <div class="c-header-pill"> <span class="c-header-pill-dot"></span> <span>${chip}</span> </div>`;
+        };
+        Components.renderBottomNav = (s) => {
+          const cv = UI_KNOWN_VIEWS.includes(s.currentView) ? s.currentView : "home";
+          const item = (view, label, icon) => {
+            const active = cv === view;
+            return `<button class="bottom-nav-item ${active ? "bottom-nav-item--active" : ""}" data-action="nav" data-view="${view}"> <div class="bottom-nav-dot ${active ? "bottom-nav-dot--accent" : ""}">${icon}</div> <div>${label}</div> </button>`;
+          };
+          return `${item("home", "Главная", "●")} ${item("menu", "Меню", "⋯")} ${item("family", "Семья", "🫂")} ${item("profile", "Профиль", "✦")} ;`;
+        };
+        Components.renderLifeLine = (s) => {
+          const history = s.scoresHistory || [];
+          if (!history.length) {
+            return `<section class="c-card c-card--flat lifeline-card"> <div class="lifeline-header-row"> <div> <div class="lifeline-label-main">История последних дней</div> <div class="lifeline-label-sub"> Здесь появится короткая полоска по вашим чек-инам. </div> </div> </div> </section>`;
+          }
+          const maxSlots = 5;
+          let last = history.slice(-maxSlots);
+          while (last.length < maxSlots) last.unshift(null);
+          const bars = last
+            .map((item) => {
+              if (!item) {
+                return `<div class="lifeline-day"> <div class="lifeline-bar lifeline-bar--placeholder"></div> <div class="lifeline-day-score">—</div> <div class="lifeline-day-label lifeline-day-label--placeholder">—</div> </div>`;
+              }
+              const sVal = item.lifeScore || 0;
+              const height = Math.max(8, Math.round((sVal / 5) * 100));
+              const opacity = 0.3 + (sVal / 5) * 0.7;
+              const colors = thermoColor(sVal);
+              return `<div class="lifeline-day"> <div class="lifeline-bar"> <div class="lifeline-bar-inner" style="height:${height}%;opacity:${opacity.toFixed(2)};--bar-color-start:${colors.start};--bar-color-end:${colors.end};"></div> </div> <div class="lifeline-day-score">${sVal.toFixed(1)}</div> <div class="lifeline-day-label">${formatDateShort(item.date)}</div> </div>`;
+            })
+            .join("");
+          return `<section class="c-card c-card--flat lifeline-card"> <div class="lifeline-header-row"> <div> <div class="lifeline-label-main">История последних дней</div> <div class="lifeline-label-sub"> Каждая колонка — ваш субъективный индекс за день. </div> <div class="lifeline-percentile"> ${percentileText(s.lifeScore) || "Продолжайте отмечаться, чтобы мы видели динамику."} </div> </div> </div> <div class="lifeline-track"> ${bars} </div> <div class="lifeline-actions"> <button class="c-button c-button--secondary" data-action="history-open-full"> Открыть историю </button> </div> </section>`;
+        };
+        Components.renderHistoryView = (s) => {
+          const history = s.scoresHistory || [];
+          const navRow = renderBackRow();
+          if (!history.length) {
+            return `<section class="c-card"> ${navRow} <div class="c-card-header"> <div> <div class="c-card-title">История дней</div> <div class="c-card-sub">Пока нет ни одного чек-ина.</div> </div> </div> <p class="section-sub"> Вернитесь на главную и пройдите первый опрос по психике, сну и финансам. </p> <button class="c-button c-button--secondary" data-action="history-back"> На главную </button> </section>`;
+          }
+          const prefs = s.historyView || {};
+          const sorted = history.slice().sort((a, b) => (a.date < b.date ? 1 : -1));
+          const selectedDate = prefs.selectedDate && sorted.find((h) => h.date === prefs.selectedDate) ? prefs.selectedDate : sorted[0] && sorted[0].date;
+          const selected = sorted.find((h) => h.date === selectedDate);
+          function reasonBlock(key) {
+            if (!selected) return "";
+            const slot = selected.reasons && selected.reasons[key];
+            if (slot && slot.reasons && slot.reasons.length) {
+              return slot.reasons.map((r) => `<span class="history-reason-chip">${r}</span>`).join("");
+            }
+            return `<span class="history-reason-chip">Причины не зафиксированы</span>`;
+          }
+          function detailBlock(title, score, key) {
+            const sevBlock = scoreSeverity(score);
+            return `<div class="history-detail-block" style="border-color:${sevBlock.border};background:linear-gradient(160deg, ${sevBlock.bg}, transparent 60%), var(--color-surface);"> <div class="history-detail-block-title">${title}</div> <div class="history-detail-score">${score} ★</div> <div class="history-reasons">${reasonBlock(key)}</div> </div>`;
+          }
+          const list = sorted
+            .map((item) => {
+              const sev = scoreSeverity(item.lifeScore);
+              return `<button class="history-row ${item.date === selectedDate ? "history-row--active" : ""}" data-action="history-select" data-date="${item.date}" style="border-color:${sev.border};background:linear-gradient(120deg, ${sev.bg}, transparent 70%);"> <div> <div class="history-row-title">${item.date}</div> <div class="history-row-sub"> ${sev.label} · Психика ${item.scores.mind} ★ · Сон ${item.scores.sleep} ★ · Финансы ${item.scores.money} ★ </div> </div> <div class="history-row-score">${item.lifeScore.toFixed(1)}</div> </button>`;
+            })
+            .join("");
+          const detail = selected
+            ? `<div class="history-detail"> <h5>${selected.date} · ${selected.lifeScore.toFixed(1)} / 5</h5> <div class="history-detail-grid"> ${detailBlock("Психика", selected.scores.mind, "mind")} ${detailBlock("Сон", selected.scores.sleep, "sleep")} ${detailBlock("Финансы", selected.scores.money, "money")} </div> <div class="history-note-row"> <textarea class="history-note" data-role="history-note" data-date="${selected.date}" placeholder="Добавьте, почему вы так себя чувствуете именно в этот день">${escapeHtml(selected.note || "")}</textarea> <button class="c-button" data-action="history-save-note" data-date="${selected.date}"> Сохранить заметку </button> </div> </div>`
+            : `<div class="history-detail">Выберите чек-ин, чтобы увидеть детали.</div>`;
+          return `<section class="c-card"> ${navRow} <div class="c-card-header"> <div> <div class="c-card-title">История дней</div> <div class="c-card-sub">Все чек-ины и причины просадки по направлениям.</div> </div> <button class="c-button c-button--secondary" data-action="history-back"> На главную </button> </div> <div class="history-content"> <div> <div class="section-sub">Выберите день, чтобы увидеть детали и добавить заметку.</div> <div class="history-list">${list}</div> </div> ${detail} </div> </section>`;
+        };
+        Components.renderHomeView = (s) => {
+          const ls = s.lifeScore;
+          const lsText = ls != null ? ls.toFixed(1) : "—";
+          const sev = scoreSeverity(ls);
+          const norm = ls != null ? Math.max(0, Math.min(1, ls / 5)) : 0;
+          const attention = renderAttentionCard(s) || "";
+          const answers = renderCheckInEcho(s);
+          const moodText = lifeMood(ls);
+          const indexSubtitle = ls != null ? "Обновлён сегодня" : "Ещё не рассчитан";
+          return `<section class="c-card quality-card"> <div class="quality-card-top"> <div class="quality-main-meta"> <div class="c-card-title">Качество вашей жизни</div> <div class="c-card-sub">Психика · Сон · Деньги</div> <div class="quality-state-badge quality-state-badge--${sev.tier}"> ${ls != null ? sev.label : "Пока нет оценки за сегодня"} </div> </div> <div class="quality-score-block"> <div class="life-score-main">${lsText}</div> <div class="life-score-caption">из 5</div> <div class="life-score-pill"> <span>Индекс дня</span><span>·</span> <span>${indexSubtitle}</span> </div> </div> </div> <div class="quality-thermo"> <div class="quality-thermo-track"> <div class="quality-thermo-fill" style="--quality-score:${norm.toFixed(2)};"></div> </div> <div class="quality-thermo-labels"> <span>ниже нормы</span> <span>выше нормы</span> </div> </div> <p class="section-sub quality-description">${moodText}</p> <div class="quality-actions"> <button class="c-button" data-action="open-feature" data-feature="chat"> Диалог с психологом </button> <button class="c-button c-button--secondary" data-action="open-feature" data-feature="family"> Поделиться с семьёй </button> </div> </section> ${answers} ${attention} ${Components.renderLifeLine(s)} <section class="c-card" style="margin-top:16px;"> <div class="section-title">Три направления</div> <div class="section-sub"> Сфокусируйтесь на том, что болит сильнее всего. Остальное подтянем постепенно. </div> <div class="feature-grid"> <div class="feature-card" data-action="open-feature" data-feature="chat"> <div class="feature-card-title">Психологическая помощь</div> <div class="feature-card-pill">Чат ИИ + подключение психолога</div> <div class="feature-card-footer"> <span>Тревога, выгорание, отношения</span><span>💬</span> </div> </div> <div class="feature-card" data-action="open-feature" data-feature="sleep"> <div class="feature-card-title">Сон</div> <div class="feature-card-pill">План на сегодняшнюю ночь</div> <div class="feature-card-footer"> <span>Режим и ритуалы</span><span>🌙</span> </div> </div> <div class="feature-card" data-action="open-feature" data-feature="finance"> <div class="feature-card-title">Финансы</div> <div class="feature-card-pill">Бюджет + подушка</div> <div class="feature-card-footer"> <span>Доход · Расходы</span><span>💰</span> </div> </div> <div class="feature-card" data-action="open-feature" data-feature="family"> <div class="feature-card-title">Семья</div> <div class="feature-card-pill">Совместные шаги</div> <div class="feature-card-footer"> <span>Поделиться прогрессом</span><span>👪</span> </div> </div> <div class="feature-card" data-action="open-feature" data-feature="game"> <div class="feature-card-title">Игра для пары</div> <div class="feature-card-pill">Карточки на 40 вопросов</div> <div class="feature-card-footer"> <span>Темы, ответы, синхрон</span><span>🎮</span> </div> </div> <div class="feature-card" data-action="open-feature" data-feature="profile"> <div class="feature-card-title">Мой профиль</div> <div class="feature-card-pill">Подписка и прогресс</div> <div class="feature-card-footer"> <span>Настройки</span><span>⚙️</span> </div> </div> </div> </section>`;
+        };
+        Components.renderMenuView = (s) => {
+          const u = s.usageCounters || { psychologyDays: 0, sleepDays: 0, financeMonths: 0 };
+          const hero = `<div class="menu-hero"> <div class="menu-hero-title">Главные модули</div> <div class="menu-hero-sub">Выбирайте то, что нужно сейчас: поддержка, сон, деньги и совместные игры.</div> <div class="menu-hero-row"> <span class="chip chip--menu">Психолог</span> <span class="chip chip--menu">Сон</span> <span class="chip chip--menu">Финансы</span> <span class="chip chip--menu">Игра</span> </div> </div>`;
+          const modules = [
+            {
+              feature: "chat",
+              title: "Психолог",
+              subtitle: "Регулярные сессии и поддержка",
+              points: ["Эмоции, конфликты, выгорание", "Поддержка в чате + живой специалист"],
+              stat: `Психологическая помощь · ${u.psychologyDays} дн.`,
+              icon: "💬",
+              cta: "Открыть психолога",
+            },
+            {
+              feature: "sleep",
+              title: "Сон",
+              subtitle: "План на ночь и ритуал",
+              points: ["Ритм, тишина, звук или тишина", "Подсказки к подъёму и отбою"],
+              stat: `Сон · ${u.sleepDays} дн.`,
+              icon: "🌙",
+              cta: "Собрать режим",
+            },
+            {
+              feature: "finance",
+              title: "Финансы",
+              subtitle: "Категории и подушка",
+              points: ["Бюджет, перерасходы", "Подушка безопасности в месяцах"],
+              stat: `Финансы · ${u.financeMonths} мес.`,
+              icon: "💰",
+              cta: "Заполнить бюджет",
+            },
+            {
+              feature: "game",
+              title: "Игра для пары",
+              subtitle: "10 тем · 40 вопросов",
+              points: ["Выбор тем и совместные ответы", "Понятные карточки вопросов"],
+              stat: "Для вечеров и поездок",
+              icon: "🎮",
+              cta: "Запустить игру",
+            },
+          ];
+          const cards = modules
+            .map(
+              (m) => `<div class="menu-card" data-action="open-feature" data-feature="${m.feature}"> <div class="menu-card-top"> <div class="menu-card-headings"> <div class="menu-card-title">${m.title}</div> <div class="menu-card-sub">${m.subtitle}</div> </div> <span class="menu-card-icon" aria-hidden="true">${m.icon}</span> </div> <ul class="menu-card-list"> ${m.points.map((p) => `<li>${p}</li>`).join("")} </ul> <div class="menu-card-actions"> <span class="menu-stat-chip">${m.stat}</span> <span class="chip chip--menu chip--menu-outline">${m.cta}</span> </div> </div>`
+            )
+            .join("");
+          return `<section class="c-card"> ${hero} <div class="section-title">Модули</div> <div class="section-sub">Каждый модуль — отдельный экран с понятными шагами и обратной стрелкой.</div> <div class="menu-grid">${cards}</div> </section>`;
+        };
+        Components.renderProfileView = (s) => {
+          const sub =
+            s.subscription === "pro"
+              ? "PRO · полный доступ ко всем модулям"
+              : s.subscription === "standard"
+              ? "STANDARD · только психологическая поддержка"
+              : "Нет активной подписки";
+          const u = s.usageCounters || { psychologyDays: 0, sleepDays: 0, financeMonths: 0 };
+          const nextThemeLabel = s.theme === "dark" ? "Включить светлую тему" : "Включить тёмную тему";
+          const initials = (s.user.name || "Гость").slice(0, 1).toUpperCase();
+          const life = s.lifeScore != null ? `${s.lifeScore.toFixed(1)} / 5` : "Индекс появится после опроса";
+          const usageChips = `<div class="profile-chip-row"> <span class="profile-chip">Психолог · ${u.psychologyDays} дн.</span> <span class="profile-chip">Сон · ${u.sleepDays} дн.</span> <span class="profile-chip">Финансы · ${u.financeMonths} мес.</span> </div>`;
+          const plans = `<div class="profile-chip-row"> <span class="chip chip--locator">Standard — 799 ₽ · психолог</span> <span class="chip chip--locator">PRO — 1399 ₽ · всё включено</span> </div>`;
+          return `<section class="c-card"> ${renderBackRow()} <div class="profile-hero"> <div class="profile-hero-avatar">${initials}</div> <div> <div class="profile-hero-name">${s.user.name || "Гость"}</div> <div class="profile-hero-sub">${sub}</div> <div class="profile-hero-badges"> <span class="profile-hero-pill">ID: ${s.user.id || "—"}</span> <span class="profile-hero-pill">Индекс дня · ${life}</span> </div> </div> </div> <div class="profile-meta-grid"> <div class="profile-meta-card"> <div class="profile-meta-title">Подписка</div> <div class="profile-meta-value">${sub}</div> <p class="section-sub">Выберите свой пакет и управляйте оплатой прямо отсюда.</p> ${plans} <button class="c-button" data-action="open-subscription" style="margin-top:10px; width:100%;"> Управлять подпиской </button> </div> <div class="profile-meta-card"> <div class="profile-meta-title">Использование сервисов</div> <div class="section-sub" style="margin:0 0 6px 0;">Мы фиксируем стабильность, чтобы показывать динамику.</div> ${usageChips} <div class="profile-meta-title" style="margin-top:12px;">Тема интерфейса</div> <p class="section-sub">Темная тема подсветит карты и чат без белых артефактов.</p> <button class="c-button c-button--secondary" data-action="toggle-theme" style="margin-top:6px; width:100%;"> ${nextThemeLabel} </button> </div> </div> </section>`;
+        };
+        Components.renderChatView = (s) => {
+          const chat = s.chat || { messages: [], isTyping: false };
+          const navRow = renderBackRow();
+          const msgs = (chat.messages || [])
+            .map((m) => {
+              const cls = "chat-message " + (m.sender === "user" ? "chat-message--user" : "chat-message--bot");
+              const meta = m.sender === "bot" && m.author ? `<div class="chat-meta">${m.author} · психолог</div>` : "";
+              return `<div>${meta}<div class="${cls}">${m.text}</div></div>`;
+            })
+            .join("");
+          const typing = chat.isTyping
+            ? `<div class="chat-message chat-message--bot"> <span class="typing-indicator"> <span class="typing-dot"></span> <span class="typing-dot"></span> <span class="typing-dot"></span> </span> </div>`
+            : "";
+          const quick = [
+            { title: "Сжать тревогу", text: "Опиши три конкретных ситуации, где тревога сильнее всего." },
+            { title: "Разобрать конфликт", text: "Дай контекст, что сказал собеседник и как ты отреагировал." },
+            { title: "План на день", text: "Что минимально нужно сделать сегодня, чтобы стало легче?" },
+          ]
+            .map((q) => `<div class="chat-quick-card"><div class="chat-quick-title">${q.title}</div><div>${q.text}</div></div>`)
+            .join("");
+          const hero = `<div class="chat-hero"> <div> <div class="chat-hero-title">Поддержка в один тап</div> <div class="chat-hero-sub">Пишите большими блоками текста — чат аккуратно разложит мысли, выделит триггеры и предложит шаги.</div> </div> <div class="chat-hero-side"> <span class="chat-pill">Онлайн психолог ${chat.psychologistName || "ADVICE"}</span> <span class="chat-pill">Сохраняем переписку для прогресса</span> </div> </div>`;
+          return `<section class="c-card"> ${navRow} <div class="c-card-header"> <div> <div class="c-card-title">Чат с психологом</div> <div class="c-card-sub"> ИИ-психолог с возможностью подключения живого специалиста. </div> </div> <span class="c-badge">Конфиденциально</span> </div> ${hero} <div class="chat-quick-grid">${quick}</div> <div class="chat-window" id="chat-window"> ${msgs || '<div class="section-sub">Опишите пару предложений о том, что сейчас больше всего давит или тревожит.</div>'} ${typing} </div> <div class="row row--stack-m"> <input class="c-field" placeholder="Напишите сообщение..." data-role="chat-input" /> <button class="c-button" data-action="chat-send">Отправить</button> </div> </section>`;
+        };
+        Components.renderSleepView = (s) => {
+          const plan = s.sleep && s.sleep.lastPlan;
+          const hasPlan = !!plan;
+          const navRow = renderBackRow();
+          const hero = hasPlan
+            ? `<div class="sleep-hero"> <div> <div class="sleep-hero-label">Ночной режим</div> <div class="sleep-hero-main">${plan.goToBed} → ${plan.wakeTime}</div> <div class="sleep-hero-sub">${plan.durationHours} ч сна · ${plan.chronotypeLabel}</div> </div> <div class="sleep-hero-meta"> <div class="pill">Ритуал с ${plan.windDownStart}</div> <div class="pill pill-ghost">${plan.audioChoice}</div> </div> </div>`
+            : `<div class="sleep-hero sleep-hero--empty"> <div> <div class="sleep-hero-label">Ночной режим</div> <div class="sleep-hero-main">Соберём идеальный отбой</div> <div class="sleep-hero-sub">Укажи подъём и предпочтения — настроим ритуал</div> </div> <div class="sleep-hero-meta"> <div class="pill">7,5 ч сна</div> <div class="pill pill-ghost">Тишина или белый шум</div> </div> </div>`;
+          const controls = `<div class="sleep-panel"> <div class="section-title">Параметры сегодня</div> <div class="section-sub">Эти ответы дают персональный план, который можно повторять.</div> <div class="chips-row"> <button class="c-button c-button--secondary" data-action="sleep-set" data-key="sleepWith" data-value="alone">Я сплю один</button> <button class="c-button c-button--secondary" data-action="sleep-set" data-key="sleepWith" data-value="not-alone">Сплю с кем-то</button> </div> <div class="section-title" style="margin-top:14px;">Готовность вкладываться</div> <div class="section-sub">Можно строить бюджетный или продвинутый сценарий.</div> <div class="chips-row"> <button class="c-button c-button--secondary" data-action="sleep-set" data-key="budgetLevel" data-value="free">Только бесплатно</button> <button class="c-button c-button--secondary" data-action="sleep-set" data-key="budgetLevel" data-value="paid">Готов вкладываться</button> </div> <div class="section-title" style="margin-top:14px;">Время подъёма</div> <input class="c-field" type="time" value="${(s.sleep.lastInputs && s.sleep.lastInputs.wakeTime) || "07:00"}" data-role="sleep-wake-time" /> <div class="section-title" style="margin-top:14px;">Что слушать перед сном?</div> <select class="c-field" data-role="sleep-noise"> <option value="silence">Тишина</option> <option value="white">Белый шум</option> <option value="water">Журчание водопада</option> <option value="melody">Спокойная мелодия</option> </select> <button class="c-button" data-action="sleep-build-plan" style="margin-top:14px;"> Построить план на ночь </button> </div>`;
+          const timeline = plan
+            ? `<div class="sleep-panel"> <div class="section-title">Лестница к отбою</div> <div class="sleep-timeline"> ${plan.timeline
+                .map((step) => `<div class="sleep-timeline-row"><div class="sleep-timeline-time">${step.label}</div><div class="sleep-timeline-text">${step.text}</div></div>`)
+                .join("")} </div> <div class="section-title" style="margin-top:14px;">Среда для глубокого сна</div> <ul class="sleep-list"> ${plan.environmentChecklist
+                .map((item) => `<li>${item}</li>`)
+                .join("")} </ul> <div class="section-title" style="margin-top:12px;">Если нужно снять стресс</div> <div class="sleep-habits"> ${plan.microHabits
+                .map((h) => `<span class="sleep-habit-pill">${h}</span>`)
+                .join("")} </div> </div>`
+            : `<div class="sleep-panel"> <div class="section-title">Лестница к отбою</div> <div class="section-sub">Заполните параметры — увидите таймлайн и чек-листы.</div> <div class="sleep-placeholder"></div> </div>`;
+          const summary = plan
+            ? `<div class="sleep-panel"> <div class="section-title">План на ночь</div> <p class="section-sub" style="margin:0;">Ложимся около <b>${plan.goToBed}</b>, подъем в <b>${plan.wakeTime}</b> — ${plan.durationHours} ч сна.</p> <p class="section-sub" style="margin:0;">${plan.envTip}</p> <p class="section-sub" style="margin:0;">${plan.moneyTip}</p> <p class="section-sub" style="margin:0;">Перед сном включите: <b>${plan.audioChoice}</b>.</p> </div>`
+            : "";
+          return `<section class="c-card"> ${navRow} <div class="c-card-header"> <div> <div class="c-card-title">Сон</div> <div class="c-card-sub">Быстрый план на ночь с ритуалом и средой</div> </div> <span class="c-badge">Сегодня</span> </div> ${hero} <div class="sleep-grid"> ${controls} ${timeline} ${summary} <div class="sleep-panel"> <div class="section-title">Чек-лист перед сном</div> <div class="section-sub">Повесьте этот чек-лист на прикроватную тумбу.</div> <div class="sleep-checklist"> <label><input type="checkbox" /> Убрать яркий экран и уведомления за 30 минут.</label> <label><input type="checkbox" /> Сделать комнату темнее и прохладнее.</label> <label><input type="checkbox" /> Лёгкая растяжка или тёплый душ, чтобы снять напряжение.</label> <label><input type="checkbox" /> Записать мысли и задачи на завтра, чтобы успокоить голову.</label> </div> </div> </div> </section>`;
+        };
+        Components.renderFinanceView = (s) => {
+          const plan = s.finance && s.finance.plan;
+          const safety = s.finance && s.finance.safetyFund;
+          const progress = safety && safety.progress ? Math.min(1, Math.max(0, safety.progress)) : 0;
+          const navRow = renderBackRow();
+          const catList = [
+            { key: "housing", label: "Жильё / аренда", placeholder: "20000" },
+            { key: "utilities", label: "ЖКХ / связь", placeholder: "5000" },
+            { key: "food", label: "Еда и дом", placeholder: "12000" },
+            { key: "transport", label: "Транспорт", placeholder: "3000" },
+            { key: "debts", label: "Долги / кредиты", placeholder: "4000" },
+            { key: "leisure", label: "Развлечения", placeholder: "3000" },
+            { key: "other", label: "Прочее", placeholder: "2000" },
+          ];
+          const heroIncome = plan && plan.income ? `${plan.income.toLocaleString("ru-RU")} ₽/мес` : "Укажите доход";
+          const heroExpense = plan ? `${plan.totalExpenses.toLocaleString("ru-RU")} ₽ расходов` : "Траты не указаны";
+          const gapBadge = plan
+            ? `<span class="finance-gap-badge ${plan.overspend ? "finance-gap-badge--bad" : "finance-gap-badge--good"}"> ${
+                plan.overspend ? "Минус в бюджете" : "Запас есть"
+              } · ${plan.gap.toLocaleString("ru-RU")} ₽ </span>`
+            : "";
+          const hero = `<div class="finance-hero">
+            <div>
+              <div class="finance-hero-label">Баланс месяца</div>
+              <div class="finance-hero-main">${heroIncome}</div>
+              <div class="finance-hero-sub">${heroExpense}</div>
+              <div class="finance-hero-gap">${gapBadge} <span class="pill pill-ghost">${plan ? Math.round((plan.savingsRate || 0) * 100) : 0}% → сбережения</span></div>
+            </div>
+            <div class="finance-hero-meta">
+              <div class="pill">Соберите категории — покажем, где резать траты</div>
+              <div class="pill pill-ghost">Подписка PRO окупается за счёт оптимизации</div>
+            </div>
+          </div>`;
+          const categoryInputs = `<div class="finance-cat-grid">
+            ${catList
+              .map((cat) => {
+                const val = plan && plan.categories ? plan.categories[cat.key] : "";
+                return `<label class="finance-cat-row"> <span class="finance-cat-label">${cat.label}</span> <input class="c-field finance-cat-input" data-role="finance-category" data-category="${cat.key}" type="number" min="0" step="500" placeholder="${cat.placeholder}" value="${val || ""}" /> </label>`;
+              })
+              .join("")}
+          </div>`;
+          const bucketCards = plan
+            ? `<div class="finance-plan-grid">
+                ${plan.buckets
+                  .map((b) => {
+                    const width = plan.income ? Math.min(100, Math.round((b.amount / plan.income) * 100)) : 0;
+                    return `<div class="finance-bucket">
+                        <div class="finance-bucket-top">
+                          <div class="finance-bucket-label">${b.label}</div>
+                          <div class="finance-bucket-amount">${b.amount.toLocaleString("ru-RU")} ₽</div>
+                        </div>
+                        <div class="finance-alloc-bar"><span style="width:${width}%"></span></div>
+                        <div class="finance-bucket-desc">${b.description}</div>
+                      </div>`;
+                  })
+                  .join("")}
+                <div class="finance-tip">${plan.comment}</div>
+              </div>`
+            : `<div class="finance-placeholder">Заполните доход и категории — разложим бюджет и покажем точки экономии.</div>`;
+          const miniStats = plan
+            ? `<div class="finance-mini-grid">
+                <div class="finance-mini-card">
+                  <div class="finance-mini-title">Сбережения</div>
+                  <div class="finance-mini-value">${Math.round((plan.savingsRate || 0) * 100)}%</div>
+                  <div class="finance-chip-row"><span class="finance-chip">Цель 10–20%</span></div>
+                </div>
+                <div class="finance-mini-card">
+                  <div class="finance-mini-title">База (жильё+еда)</div>
+                  <div class="finance-mini-value">${Math.round((plan.essentialsRate || 0) * 100)}%</div>
+                  <div class="finance-chip-row"><span class="finance-chip">Норма до 65%</span></div>
+                </div>
+                <div class="finance-mini-card">
+                  <div class="finance-mini-title">Образ жизни</div>
+                  <div class="finance-mini-value">${Math.round((plan.lifestyleRate || 0) * 100)}%</div>
+                  <div class="finance-chip-row"><span class="finance-chip">Подписки, развлечения</span></div>
+                </div>
+              </div>`
+            : "";
+          const recommendations = plan && plan.recommendations.length
+            ? `<div class="finance-reco">${plan.recommendations
+                .map(
+                  (rec) => `<div class="finance-reco-item">
+                    <div class="finance-reco-lead">${rec.text}</div>
+                    <div class="finance-reco-tips">${(rec.tips || []).map((t) => `<span>• ${t}</span>`).join("")}</div>
+                  </div>`
+                )
+                .join("")}</div>`
+            : `<p class="finance-note">После расчёта появятся советы по каждой категории — жильё, еда, транспорт, ЖКХ и т.д.</p>`;
+          const safetyBlock = safety
+            ? `<div class="safety-result">
+                <div class="c-card-title" style="margin-bottom:6px;">Подушка безопасности</div>
+                <p class="section-sub" style="margin:0;">Цель: <b>${safety.target.toLocaleString("ru-RU")} ₽</b> · ${safety.targetMonths} мес. расходов.</p>
+                <div class="safety-progress"><div class="safety-progress-fill" style="transform:scaleX(${progress.toFixed(2)});"></div></div>
+                <p class="section-sub" style="margin:0;">${Math.round(progress * 100)}% цели · ${safety.status}</p>
+              </div>`
+            : `<p class="finance-note">Заполните расходы и накопления — покажем сумму подушки и срок, за который её можно закрыть.</p>`;
+          const weeklyActions = `<ul class="finance-actions">
+            <li>Фиксируйте траты по категориям раз в неделю, чтобы не уползали в минус.</li>
+            <li>Отключите лишние подписки и пересмотрите тарифы связи/интернета.</li>
+            <li>Замените будничные такси на проездной и пешие участки.</li>
+            <li>Сразу после зарплаты отправляйте перевод в подушку или на долг.</li>
+          </ul>`;
+          return `<section class="c-card"> ${navRow}
+            <div class="c-card-header">
+              <div>
+                <div class="c-card-title">Финансы</div>
+                <div class="c-card-sub">Компактный бюджет по категориям + готовые советы</div>
+              </div>
+              <span class="c-badge">Месяц</span>
+            </div>
+            ${hero}
+            <div class="finance-grid">
+              <div class="finance-panel finance-stack">
+                <div>
+                  <div class="section-title" style="margin-top:4px;">Доход и категории</div>
+                  <div class="section-sub">Укажите доход и месячные траты по блокам — покажем дефицит и где экономить.</div>
+                  <div class="finance-compact-form">
+                    <input class="c-field" type="number" min="0" step="1000" data-role="finance-income" placeholder="Например, 50000" value="${s.finance.income || ""}" />
+                    ${categoryInputs}
+                    <button class="c-button" data-action="finance-build-plan" style="margin-top:6px;"> Посчитать баланс и советы </button>
+                  </div>
+                </div>
+                ${miniStats}
+                ${bucketCards}
+              </div>
+              <div class="finance-panel finance-stack">
+                <div>
+                  <div class="section-title" style="margin-top:4px;">Советы по сокращению</div>
+                  <div class="section-sub">Даем подсказки, если траты по жилью, еде или транспорту выбиваются из нормы.</div>
+                  ${recommendations}
+                </div>
+                <div>
+                  <div class="section-title" style="margin-top:12px;">Подушка безопасности</div>
+                  <div class="section-sub">Рассчитаем нужную сумму и срок накопления.</div>
+                  <input class="c-field" type="number" min="0" step="500" data-role="finance-safety-expenses" placeholder="Расходы в месяц, ₽" />
+                  <input class="c-field" type="number" min="0" step="500" data-role="finance-safety-current" placeholder="Уже отложено, ₽" style="margin-top:8px;" />
+                  <input class="c-field" type="number" min="0" step="500" data-role="finance-safety-monthly" placeholder="Готовы откладывать в месяц, ₽" style="margin-top:8px;" />
+                  <select class="c-field" data-role="finance-safety-months" style="margin-top:8px;">
+                    <option value="3">Цель: 3 месяца подушки</option>
+                    <option value="6">Цель: 6 месяцев подушки</option>
+                    <option value="9">Цель: 9 месяцев подушки</option>
+                    <option value="12">Цель: 12 месяцев подушки</option>
+                  </select>
+                  <button class="c-button c-button--secondary" data-action="finance-calc-safety" style="margin-top:12px;"> Посчитать подушку </button>
+                  ${safetyBlock}
+                </div>
+                <div>
+                  <div class="section-title" style="margin-top:10px;">Действия на неделю</div>
+                  ${weeklyActions}
+                </div>
+              </div>
+            </div>
+          </section>`;
+        };
+        Components.renderFamilyView = (s) => {
+          const ls = s.lifeScore != null ? s.lifeScore.toFixed(1) : "—";
+          const historyCount = (s.scoresHistory || []).length;
+          const lastReasons = s.lastCheckInReasons || {};
+          const shareChips = Object.keys(lastReasons)
+            .map((k) => (lastReasons[k] && lastReasons[k].length ? lastReasons[k].slice(0, 2) : []))
+            .flat()
+            .slice(0, 4)
+            .map((r) => `<span class="family-pill">${r}</span>`)
+            .join("") || `<span class="family-pill">Добавьте причины в чек-ин, чтобы делиться ими</span>`;
+          const hero = `<div class="family-hero"> <div> <div class="family-hero-title">Семья и поддержка</div> <div class="family-hero-sub">Делитесь индексом и причинами с близкими — договоритесь о шагах, которые реально помогают.</div> <div class="family-meta"> <span class="pill">Индекс: ${ls} / 5</span> <span class="pill pill-ghost">Чек-инов: ${historyCount}</span> </div> </div> <div class="family-hero-side"> <button class="c-button">Скопировать ссылку на прогресс</button> <button class="c-button c-button--secondary" data-action="open-feature" data-feature="game">Открыть игру</button> <button class="c-button c-button--secondary" data-action="open-feature" data-feature="chat">Позвать психолога</button> </div> </div>`;
+          const cards = `<div class="family-card-grid"> <div class="family-card"> <h4>Совместные цели</h4> <div class="section-sub">Договоритесь о коротких шагах и закрепите ответственность.</div> <div class="family-progress"> <span>Сон: ${s.sleep && s.sleep.lastPlan ? "План обновлён" : "Нужен план"}</span> <span>Финансы: ${s.finance && s.finance.plan ? "Бюджет готов" : "Добавьте категории"}</span> </div> <div class="chips-row"> <span class="chip">30 минут без экрана перед сном</span> <span class="chip">Еженедельный разбор бюджета</span> <span class="chip">Обсудить границы отдыха</span> </div> </div> <div class="family-card"> <h4>Что показать</h4> <div class="section-sub">Коротко отправьте индекс и причины — добавьте заметку о нужной поддержке.</div> <div class="family-meta">${shareChips}</div> <div class="section-sub" style="margin-top:6px;">Добавьте заметку о том, какая поддержка вам нужна сегодня.</div> </div> </div>`;
+          return `<section class="c-card"> ${renderBackRow()} <div class="c-card-header"> <div> <div class="c-card-title">Семья</div> <div class="c-card-sub">Делиться прогрессом и договариваться о совместных шагах</div> </div> <span class="c-badge">Поддержка</span> </div> ${hero} ${cards} </section>`;
+        };
+        Components.renderGameView = (s) => {
+          const topics = Services.getGameTopics();
+          const gameState = s.game || {};
+          const stage = gameState.stage || "category";
+          const activeKey = gameState.activeTopic || (topics[0] && topics[0].key) || null;
+          const activeTopic = topics.find((t) => t.key === activeKey) || topics[0] || null;
+          const deck = (gameState.deck && activeKey && gameState.deck[activeKey]) || (activeTopic ? activeTopic.questions : []);
+          const total = deck.length;
+          const safeIndex = total ? Math.min(Math.max(0, gameState.questionIndex || 0), total - 1) : 0;
+          const topicCards = topics
+            .map((t) => {
+              const preview = (t.questions || [])
+                .slice(0, 3)
+                .map((q) => `<li>${q}</li>`)
+                .join("");
+              return `<article class="game-category-card" style="--cat-accent:${t.accent};box-shadow:0 30px 70px ${t.accent}2e;"> <div class="game-cat-icon">${t.emoji || "🎴"}</div> <div class="game-cat-title">${t.title}</div> <div class="game-cat-copy">${t.tagline || "Осознанный разговор"}</div> <ol class="game-preview-list">${preview}</ol> <div class="game-cat-count">${(t.questions || []).length} вопросов</div> <button class="game-cat-cta" data-action="game-choose-topic" data-topic="${t.key}">Выбрать</button> </article>`;
+            })
+            .join("");
+          const accent = activeTopic ? activeTopic.accent : (topics[0] && topics[0].accent) || "#8b5cf6";
+          const categoryStage = `<section class="game-shell game-shell--purple" style="--topic-accent:${accent};--topic-accent-strong:${accent};"> <div class="game-header-bar"> <button class="game-back-btn" data-action="nav" data-view="menu">⟵ Назад</button> <span class="game-stage-pill">Игра для пары · ${topics.length} тем</span> </div> <div class="game-title-lg">Выбери категорию вопросов</div> <p class="game-subtext">Карточки на важные темы пары: будущее, деньги, психологическая близость, конфликты и ещё больше.</p> <div class="game-category-track">${topicCards}</div> <button class="game-bottom-cta" data-action="nav" data-view="menu">Назад</button> </section>`;
+          if (!activeTopic) return categoryStage;
+          const modeStage = `<section class="game-shell game-shell--purple" style="--topic-accent:${accent};--topic-accent-strong:${accent};"> <div class="game-header-bar"> <button class="game-back-btn" data-action="game-back-stage">⟵ Назад</button> <span class="game-stage-pill">${activeTopic.title}</span> </div> <div class="game-title-lg">Поговорим откровенно?</div> <p class="game-subtext">Играйте в чате, если на расстоянии. Или обсуждайте лицом к лицу, свайпая карточки.</p> <div class="mode-buttons"> <button class="mode-btn mode-btn--primary" data-action="game-mode-chat">📨 Чат</button> <button class="mode-btn" data-action="game-mode-cards">🃏 Карточки</button> </div> </section>`;
+          const hint = `<div class="game-swipe-hint"> <div class="game-title-lg" style="margin:0 0 8px;font-size:20px;">Свайпайте, чтобы перейти к следующему вопросу</div> <div class="game-subtext" style="margin-bottom:16px;">Карточки двигаются по горизонтали, лёгкий поворот возвращает её назад.</div> <button class="mode-btn mode-btn--primary" data-action="game-hide-hint">К карточкам</button> </div>`;
+          const stack = deck
+            .slice(safeIndex, safeIndex + 3)
+            .map((q, idx) => {
+              const tilt = idx === 1 ? -1.6 : idx === 2 ? 1.4 : 0;
+              return `<div class="game-swipe-card ${idx === 0 ? "game-swipe-card--active" : ""}" data-card-index="${safeIndex + idx}" data-topic="${activeKey}" style="--card-offset:${idx};--card-tilt:${tilt};"> <div class="game-card-label">${activeTopic.title}</div> <div class="game-card-question">${q}</div> </div>`;
+            })
+            .join("") || `<div class="game-swipe-card game-swipe-card--active"><div class="game-card-question">Добавьте вопросы для темы</div></div>`;
+          const cardsStage = `<section class="game-shell game-shell--purple" style="--topic-accent:${accent};--topic-accent-strong:${accent};"> <div class="game-header-bar"> <button class="game-back-btn" data-action="game-back-stage">⟵ Назад</button> <span class="game-stage-pill">${activeTopic.title}</span> </div> <div class="game-card-stage"> <div class="game-progress"> <span>Вопрос ${Math.min(total, safeIndex + 1)} из ${Math.max(total, 1)}</span> <span style="opacity:0.8;">${activeTopic.tagline || ""}</span> </div> <div class="game-stack ${gameState.showHint ? "game-stack--hint" : ""}">${gameState.showHint ? hint : stack}</div> <div class="game-controls-compact"> <button class="game-back-btn" data-action="game-prev-question" data-topic="${activeKey}" ${safeIndex === 0 ? "disabled" : ""}>◀</button> <button class="game-back-btn" data-action="game-next-question" data-topic="${activeKey}" ${safeIndex >= total - 1 ? "disabled" : ""}>▶</button> </div> </div> </section>`;
+          if (stage === "mode") return modeStage;
+          if (stage === "cards") return cardsStage;
+          return categoryStage;
+        };
+        return { Components };
+      })();
+    })();
+  </script>
+  <!-- FEATURES / INTRO / HANDLERS -->
+  <script>
+    (function () {
+      "use strict";
+      const AdviceApp = window.AdviceApp;
+      const State = AdviceApp.State;
+      const Services = AdviceApp.Services;
+      const UI = AdviceApp.UI;
+      const Bus = AdviceApp.EventBus;
+      const Core = AdviceApp.Core;
+      AdviceApp.Features = (function () {
+        const INTRO_SCREEN_DURATION = 1800;
+        const QUESTIONS = [
+          { key: "mind", label: "Как вы себя чувствуете в психологическом плане?" },
+          { key: "sleep", label: "Как прошёл ваш сон?" },
+          { key: "money", label: "Как у вас с финансами сегодня?" },
+        ];
+        const INTRO_DIALOG_MESSAGES = [
+          { sender: "bot", label: "ADVICE", text: "Сигнал принят. Сохранили индекс дня и ответы по психике, сну и финансам." },
+          { sender: "bot", label: "ADVICE", text: "Записали причины просадки, чтобы вернуться к ним в рекомендациях." },
+          { sender: "user", label: "Вы", text: "Окей, открывайте главную." },
+        ];
+        const ATTENTION_REASON_LIMIT = 3;
+        const ATTENTION_LIBRARY = {
+          mind: {
+            1: [
+              "Панические атаки возвращаются",
+              "Не могу встать с кровати утром",
+              "Сильные конфликты с близкими",
+              "Каждый день кажется безнадёжным",
+              "Накатывает чувство пустоты",
+              "Боюсь выходить из дома",
+              "Рабочая нагрузка ломает",
+              "Часто плачу без причин",
+              "Нет ни одной опоры",
+              "Тело реагирует болями на стресс",
+            ],
+            2: [
+              "Много тревоги или паники",
+              "Конфликты с близкими",
+              "Постоянная усталость и апатия",
+              "Нет ощущения смысла",
+              "Тревога за здоровье",
+              "Рабочие дедлайны поджимают",
+              "Слишком много новостей",
+              "Нет поддержки",
+              "Не могу расслабиться",
+              "Всё раздражает",
+            ],
+            3: [
+              "Не могу сфокусироваться",
+              "Сложно принять решения",
+              "Перепады настроения",
+              "Сомневаюсь в себе",
+              "Нет времени на себя",
+              "Боюсь будущего",
+              "Мало радости",
+              "Откладываю важное",
+              "Слишком много общения",
+              "Неясные отношения",
+            ],
+          },
+          sleep: {
+            1: [
+              "Почти не сплю несколько ночей",
+              "Засыпаю только к рассвету",
+              "Просыпаюсь каждые 30 минут",
+              "Снятся тяжёлые кошмары",
+              "Ложусь спать ближе к утру",
+              "Шум вокруг не даёт уснуть",
+              "В комнате душно и жарко",
+              "Телефон постоянно звенит",
+              "Сплю по 3–4 часа максимум",
+              "Просыпаюсь в панике",
+            ],
+            2: [
+              "Просыпаюсь среди ночи",
+              "Засыпаю по несколько часов",
+              "Сплю рывками",
+              "Слишком шумно вокруг",
+              "Нет ритуала перед сном",
+              "Смотрю в экран до последнего",
+              "Поздно ем",
+              "Пью кофе вечером",
+              "Смена графиков",
+              "Кошмары мешают",
+            ],
+            3: [
+              "Чуть меньше сна чем нужно",
+              "Нерегулярный подъём",
+              "Переношу дела на ночь",
+              "Пью много воды перед сном",
+              "Нет физической активности",
+              "Думаю о работе в постели",
+              "Гаджеты рядом",
+              "Неудобный матрас",
+              "Жара или духота",
+              "Слишком светло",
+            ],
+          },
+          money: {
+            1: [
+              "Дохода не хватает на базовые нужды",
+              "Есть просроченные платежи",
+              "Регулярно беру микрозаймы",
+              "Не получается закрыть кредиты",
+              "Нечем платить за жильё",
+              "Откладываю оплату счетов",
+              "Семья зависит от одного дохода",
+              "Каждый месяц ухожу в минус",
+              "Пугают звонки от банков",
+              "Нет финансовой подушки вовсе",
+            ],
+            2: [
+              "Подушка меньше одного месяца",
+              "Долги или кредиты давят",
+              "Доход нестабильный",
+              "Нужно помогать семье",
+              "Не могу закрыть базовые траты",
+              "Не знаю, куда уходят деньги",
+              "Большие обязательные платежи",
+              "Не хватает на лечение или здоровье",
+              "Случайные непредвиденные расходы",
+              "Постоянно беру взаймы",
+            ],
+            3: [
+              "Хочу копить, но не получается",
+              "Путаюсь в подписках",
+              "Слишком много импульсивных покупок",
+              "Нет понятного бюджета",
+              "Не понимаю, как расти в доходе",
+              "Платежи по подпискам давят",
+              "Периодические большие траты",
+              "Нет учёта расходов",
+              "Боюсь потерять работу",
+              "Отложил крупную цель",
+            ],
+          },
+        };
+        const checkinStars = { mind: 0, sleep: 0, money: 0 };
+        const attentionSelections = { mind: { score: null, reasons: [] }, sleep: { score: null, reasons: [] }, money: { score: null, reasons: [] } };
+        const sleepInputs = { sleepWith: null, budgetLevel: null, wakeTime: "07:00", noisePreference: "silence" };
+        let introRoot = null;
+        let introTimer = null;
+        const KNOWN_VIEWS = ["home", "menu", "profile", "chat", "sleep", "finance", "family", "history", "game"];
+        let navStack = [];
+        let swipeTracker = { pointerId: null, startX: 0, card: null, baseY: 0, baseScale: 1, baseTilt: 0, raf: null, dx: 0 };
+        function applyTheme(theme) {
+          const body = document.body;
+          if (!body) return;
+          const dark = theme === "dark";
+          body.classList.toggle("theme-dark", dark);
+          document.documentElement.setAttribute("theme", dark ? "dark" : "light");
+          const metaTheme = document.querySelector('meta[name="theme-color"]');
+          if (metaTheme) metaTheme.setAttribute("content", dark ? "#0f1114" : "#000000");
+        }
+        function clearIntroTimer() {
+          if (introTimer) {
+            clearTimeout(introTimer);
+            introTimer = null;
+          }
+        }
+        function syncHeaderNav() {
+          const s = State.getState();
+          const header = document.getElementById("app-header");
+          const nav = document.getElementById("bottom-nav");
+          if (header) header.innerHTML = UI.Components.renderHeader(s);
+          if (nav) nav.innerHTML = UI.Components.renderBottomNav(s);
+        }
+        function renderMain() {
+          const s = State.getState();
+          const main = document.getElementById("app-main");
+          if (!main) return;
+          let html = "";
+          switch (s.currentView) {
+            case "home":
+              html = UI.Components.renderHomeView(s);
+              break;
+            case "menu":
+              html = UI.Components.renderMenuView(s);
+              break;
+            case "profile":
+              html = UI.Components.renderProfileView(s);
+              break;
+            case "chat":
+              html = UI.Components.renderChatView(s);
+              break;
+            case "sleep":
+              html = UI.Components.renderSleepView(s);
+              break;
+            case "finance":
+              html = UI.Components.renderFinanceView(s);
+              break;
+            case "family":
+              html = UI.Components.renderFamilyView(s);
+              break;
+            case "game":
+              html = UI.Components.renderGameView(s);
+              break;
+            case "history":
+              html = UI.Components.renderHistoryView(s);
+              break;
+            default:
+              html = UI.Components.renderHomeView(s);
+          }
+          main.innerHTML = html;
+          if (s.currentView === "chat") {
+            const w = document.getElementById("chat-window");
+            if (w) w.scrollTop = w.scrollHeight;
+          }
+        }
+        function safeView(view) {
+          if (KNOWN_VIEWS.includes(view)) return view;
+          return "home";
+        }
+        function navigate(view, opts = {}) {
+          const target = safeView(view);
+          const current = State.getState().currentView;
+          if (opts.resetStack) navStack = [];
+          if (target === current) return;
+          if (!opts.resetStack) {
+            navStack.push(current);
+          }
+          State.setState({ currentView: target });
+        }
+        function goBack() {
+          if (navStack.length) {
+            const prev = navStack.pop();
+            State.setState({ currentView: prev || "home" });
+            return;
+          }
+          State.setState({ currentView: "home" });
+        }
+        function shouldAskReasons(kind, value) {
+          return value > 0 && value <= 3 && !!getReasonOptions(kind, value).length;
+        }
+        function getReasonOptions(kind, value) {
+          const map = ATTENTION_LIBRARY[kind] || {};
+          return map[value] || [];
+        }
+        function getQuestionLabel(kind) {
+          const found = QUESTIONS.find((q) => q.key === kind);
+          return found ? found.label : kind;
+        }
+        function snapshotAttentionSelections() {
+          const snap = {};
+          Object.keys(attentionSelections).forEach((key) => {
+            const slot = attentionSelections[key] || {};
+            snap[key] = { score: slot.score, reasons: (slot.reasons || []).slice(0) };
+          });
+          return snap;
+        }
+        /* ---------- INTRO ---------- */
+        function showIntroLogo() {
+          clearIntroTimer();
+          if (!introRoot) return;
+          introRoot.classList.remove("intro-water");
+          introRoot.innerHTML = `<div class="intro-screen"> <div class="intro-title-main">ADVICE</div> </div>`;
+          const logo = introRoot.querySelector(".intro-title-main");
+          if (logo) {
+            setTimeout(() => logo.classList.add("intro-logo-leave"), INTRO_SCREEN_DURATION - 420);
+          }
+          introTimer = setTimeout(showIntroHello, INTRO_SCREEN_DURATION);
+        }
+        function showIntroHello() {
+          clearIntroTimer();
+          if (!introRoot) return;
+          introRoot.classList.remove("intro-water");
+          introRoot.innerHTML = `<div class="intro-screen"> <div class="intro-hello">Привет</div> </div>`;
+          introTimer = setTimeout(() => showIntroQuestion(0), INTRO_SCREEN_DURATION);
+        }
+        function renderReasonSelector(kind, value, idx) {
+          const screen = introRoot && introRoot.querySelector(`.intro-screen[data-question-index="${idx}"]`);
+          if (!screen) return;
+          const slot = screen.querySelector(".attention-panel-slot");
+          if (!slot) return;
+          const options = getReasonOptions(kind, value);
+          if (!options.length) return;
+          const selected = (attentionSelections[kind] && attentionSelections[kind].reasons) || [];
+          const message = value <= 2 ? "Что тянет вниз сильнее всего?" : "Что мешает дотянуться до хорошей оценки?";
+          slot.innerHTML = `<div class="attention-panel" data-kind="${kind}"> <div class="attention-panel-title">${getQuestionLabel(kind)}</div> <div class="attention-panel-sub">${message} Выберите до ${ATTENTION_REASON_LIMIT} пунктов.</div> <div class="attention-options"> ${options
+            .map(
+              (opt, i) =>
+                `<button class="attention-option ${selected.includes(opt) ? "attention-option--selected" : ""}" data-action="intro-toggle-reason" data-kind="${kind}" data-index="${i}"> ${opt} </button>`
+            )
+            .join("")} </div> <button class="c-button c-button--secondary" data-action="intro-confirm-reasons" data-kind="${kind}" data-question-index="${idx}"> Готово · далее </button> </div>`;
+          slot.classList.add("attention-panel-slot--visible");
+        }
+        function hideReasonSelector(idx) {
+          const screen = introRoot && introRoot.querySelector(`.intro-screen[data-question-index="${idx}"]`);
+          if (!screen) return;
+          const slot = screen.querySelector(".attention-panel-slot");
+          if (slot) {
+            slot.innerHTML = "";
+            slot.classList.remove("attention-panel-slot--visible");
+          }
+        }
+        function showIntroQuestion(idx) {
+          clearIntroTimer();
+          if (!introRoot) return;
+          const q = QUESTIONS[idx];
+          const selected = checkinStars[q.key];
+          introRoot.classList.remove("intro-water");
+          introRoot.innerHTML = `<div class="intro-screen" data-question-index="${idx}"> <div class="intro-question-label">${q.label}</div> <div class="intro-stars-row" data-role="intro-stars" data-kind="${q.key}"> ${[1, 2, 3, 4, 5]
+            .map(
+              (v) =>
+                `<button class="intro-star ${selected && v <= selected ? "intro-star--active" : ""}" data-action="intro-set-star" data-kind="${q.key}" data-value="${v}"> ★ </button>`
+            )
+            .join("")} </div> <div class="attention-panel-slot"></div> <div class="intro-actions"> <button class="c-button c-button--secondary" data-action="intro-next" data-question-index="${idx}" ${selected ? "" : "disabled"}> Далее </button> </div> </div>`;
+          if (shouldAskReasons(q.key, selected)) {
+            renderReasonSelector(q.key, selected, idx);
+          }
+        }
+          function goToNextQuestion(idx) {
+            if (idx < QUESTIONS.length - 1) {
+              setTimeout(() => showIntroQuestion(idx + 1), 350);
+            } else {
+              // Make sure the main shell is visible before rendering the closing dialog.
+              revealAppShell();
+              showIntroDialog();
+            }
+          }
+          function introNext(idx) {
+            const q = QUESTIONS[idx];
+            if (!q) return;
+            const score = checkinStars[q.key];
+            // If the score somehow isn't set on the final step, use a neutral value
+            // so the flow can continue instead of freezing on the last question.
+            if (!score) {
+              if (idx === QUESTIONS.length - 1) {
+                checkinStars[q.key] = 3;
+              } else {
+                return;
+              }
+            }
+            hideReasonSelector(idx);
+            goToNextQuestion(idx);
+          }
+        function introSetStar(kind, value, idx) {
+          const val = Number(value);
+          checkinStars[kind] = val;
+          attentionSelections[kind] = attentionSelections[kind] || { score: null, reasons: [] };
+          attentionSelections[kind].score = val;
+          const row = document.querySelector(`.intro-stars-row[data-kind="${kind}"]`);
+          if (row) {
+            row.querySelectorAll(".intro-star").forEach((btn) => {
+              const v = Number(btn.dataset.value || 0);
+              btn.classList.toggle("intro-star--active", v <= val);
+            });
+          }
+          const nextBtn = document.querySelector(`button[data-action="intro-next"][data-question-index="${idx}"]`);
+          if (nextBtn) nextBtn.disabled = !val;
+          if (shouldAskReasons(kind, val)) {
+            attentionSelections[kind].reasons = attentionSelections[kind].reasons || [];
+            renderReasonSelector(kind, val, idx);
+            const screen = introRoot && introRoot.querySelector(`.intro-screen[data-question-index="${idx}"]`);
+            const slot = screen && screen.querySelector(".attention-panel-slot");
+            const hasPanel = slot && slot.classList.contains("attention-panel-slot--visible");
+            if (!hasPanel) {
+              goToNextQuestion(idx);
+            }
+          } else {
+            attentionSelections[kind].reasons = [];
+            hideReasonSelector(idx);
+            goToNextQuestion(idx);
+          }
+        }
+        function introToggleReason(kind, optionIndex, button) {
+          const score = checkinStars[kind];
+          if (!shouldAskReasons(kind, score)) return;
+          const options = getReasonOptions(kind, score);
+          const choice = options[optionIndex];
+          if (!choice) return;
+          const slot = attentionSelections[kind] || { score: score, reasons: [] };
+          const reasons = slot.reasons ? slot.reasons.slice(0) : [];
+          const existing = reasons.indexOf(choice);
+          if (existing >= 0) {
+            reasons.splice(existing, 1);
+          } else {
+            if (reasons.length >= ATTENTION_REASON_LIMIT) return;
+            reasons.push(choice);
+          }
+          slot.reasons = reasons;
+          attentionSelections[kind] = slot;
+          if (button) {
+            button.classList.toggle("attention-option--selected", reasons.includes(choice));
+          }
+        }
+        function introConfirmReasons(kind, idx) {
+          const slot = attentionSelections[kind] || {};
+          if (!slot.score) return;
+          hideReasonSelector(idx);
+          goToNextQuestion(idx);
+        }
+        function revealAppShell() {
+          const appShell = document.querySelector(".app-shell");
+          const bottomNav = document.querySelector(".c-bottom-nav");
+          if (appShell) appShell.classList.remove("app-shell--hidden");
+          if (bottomNav) bottomNav.classList.remove("app-shell--hidden");
+        }
+        function showIntroDialog() {
+          clearIntroTimer();
+          if (!introRoot) return;
+          const attentionSnap = snapshotAttentionSelections();
+          State.updateSlice("attention", attentionSnap);
+          State.applyDailyCheckIn(checkinStars, attentionSnap);
+          navStack = [];
+          State.setState({ currentView: "home" });
+          revealAppShell();
+          syncHeaderNav();
+          renderMain();
+          introRoot.classList.add("intro-water", "intro-overlay");
+          introRoot.innerHTML = `<div class="intro-screen"> <div class="intro-dialog"> ${INTRO_DIALOG_MESSAGES.map(
+            (msg) => `<div class="intro-dialog-bubble intro-dialog-bubble--${msg.sender}"> <div class="intro-dialog-meta">${msg.label}</div> <div>${msg.text}</div> </div>`
+          ).join("")} </div> </div>`;
+          requestAnimationFrame(() => {
+            const bubbles = introRoot.querySelectorAll(".intro-dialog-bubble");
+            bubbles.forEach((bubble, idx) => {
+              setTimeout(() => bubble.classList.add("intro-dialog-bubble--visible"), idx * 420 + 140);
+            });
+          });
+          const total = INTRO_DIALOG_MESSAGES.length * 420 + 1600;
+          introTimer = setTimeout(finishIntro, total);
+        }
+        function finishIntro() {
+          clearIntroTimer();
+          if (!introRoot) return;
+          introRoot.classList.add("intro-hidden");
+          introRoot.classList.remove("intro-overlay");
+          setTimeout(() => {
+            introRoot.innerHTML = "";
+          }, 350);
+        }
+        /* ---------- CHAT ---------- */
+        function ensurePsychologistName() {
+          const s = State.getState();
+          if (s.chat.psychologistName) return s.chat.psychologistName;
+          const name = Services.randomPsychologistName();
+          State.updateSlice("chat", { psychologistName: name });
+          return name;
+        }
+        function sendChat(text) {
+          const t = (text || "").trim();
+          if (!t) return;
+          const s = State.getState();
+          const name = ensurePsychologistName();
+          const msgs = (s.chat.messages || []).concat([{ id: Core.uid("m"), sender: "user", text: t }]);
+          State.updateSlice("chat", { messages: msgs, isTyping: true });
+          Services.sendToPsychologyAI(t, { psychologistName: name, userId: s.user.id }).then((ans) => {
+            const cur = State.getState();
+            const updated = (cur.chat.messages || []).concat([{ id: Core.uid("m"), sender: "bot", text: ans.text, author: ans.psychologistName }]);
+            State.updateSlice("chat", { messages: updated, isTyping: false, psychologistName: ans.psychologistName });
+          });
+        }
+        /* ---------- SLEEP & FINANCE ---------- */
+        function setSleepParam(key, val) {
+          sleepInputs[key] = val;
+        }
+        function buildSleepPlan() {
+          const wake = document.querySelector('[data-role="sleep-wake-time"]');
+          const noise = document.querySelector('[data-role="sleep-noise"]');
+          if (wake && wake.value) sleepInputs.wakeTime = wake.value;
+          if (noise && noise.value) sleepInputs.noisePreference = noise.value;
+          const plan = Services.buildSleepPlan(sleepInputs);
+          State.updateSlice("sleep", { lastPlan: plan, lastInputs: Core.deepClone(sleepInputs) });
+        }
+        function buildFinancePlan() {
+          const incEl = document.querySelector('[data-role="finance-income"]');
+          const catEls = document.querySelectorAll('[data-role="finance-category"]');
+          const categories = {};
+          catEls.forEach((el) => {
+            if (el && el.dataset && el.dataset.category) {
+              categories[el.dataset.category] = el.value;
+            }
+          });
+          const plan = Services.buildFinancePlan(incEl ? incEl.value : "", categories);
+          State.updateSlice("finance", { income: plan.income, plan });
+        }
+        function calculateSafetyFund() {
+          const expensesEl = document.querySelector('[data-role="finance-safety-expenses"]');
+          const savingsEl = document.querySelector('[data-role="finance-safety-current"]');
+          const monthlyEl = document.querySelector('[data-role="finance-safety-monthly"]');
+          const monthsEl = document.querySelector('[data-role="finance-safety-months"]');
+          const fund = Services.buildSafetyFund(
+            savingsEl ? savingsEl.value : "",
+            expensesEl ? expensesEl.value : "",
+            monthsEl ? monthsEl.value : "",
+            monthlyEl ? monthlyEl.value : ""
+          );
+          State.updateSlice("finance", { safetyFund: fund });
+        }
+        /* ---------- GAME ---------- */
+        function shuffle(arr) {
+          const a = (arr || []).slice();
+          for (let i = a.length - 1; i > 0; i -= 1) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+          }
+          return a;
+        }
+        function getGameTopic(topicKey) {
+          const topics = Services.getGameTopics();
+          if (!topics.length) return null;
+          return topics.find((t) => t.key === topicKey) || topics[0];
+        }
+        function ensureGameDeck(topicKey) {
+          if (!topicKey) return [];
+          const s = State.getState();
+          const deckMap = Object.assign({}, (s.game && s.game.deck) || {});
+          let deck = deckMap[topicKey];
+          if (!deck || !deck.length) {
+            const bank = Services.getGameQuestionBank();
+            deck = shuffle((bank[topicKey] || []).slice()).slice(0, 40);
+            deckMap[topicKey] = deck;
+            State.updateSlice("game", { deck: deckMap });
+          }
+          return deck;
+        }
+        function selectGameTopic(topicKey) {
+          const topic = getGameTopic(topicKey);
+          if (!topic) return;
+          const deckMap = Object.assign({}, (State.getState().game && State.getState().game.deck) || {});
+          deckMap[topic.key] = ensureGameDeck(topic.key);
+          State.updateSlice("game", {
+            activeTopic: topic.key,
+            questionIndex: 0,
+            deck: deckMap,
+            mode: null,
+            stage: "mode",
+            showHint: true,
+          });
+        }
+        function nextGameQuestion() {
+          const s = State.getState();
+          const topic = getGameTopic(s.game && s.game.activeTopic);
+          if (!topic) return;
+          const deck = ensureGameDeck(topic.key);
+          const max = Math.max(0, deck.length - 1);
+          const currentIndex = s.game && typeof s.game.questionIndex === "number" ? s.game.questionIndex : 0;
+          const next = Math.min(max, currentIndex + 1);
+          State.updateSlice("game", { activeTopic: topic.key, questionIndex: next, stage: "cards", showHint: false });
+        }
+        function prevGameQuestion() {
+          const s = State.getState();
+          const topic = getGameTopic(s.game && s.game.activeTopic);
+          if (!topic) return;
+          const currentIndex = s.game && typeof s.game.questionIndex === "number" ? s.game.questionIndex : 0;
+          const prev = Math.max(0, currentIndex - 1);
+          State.updateSlice("game", { activeTopic: topic.key, questionIndex: prev, stage: "cards" });
+        }
+        function sendGameAnswer(topicKey, text) {
+          const t = (text || "").trim();
+          const topic = getGameTopic(topicKey);
+          if (!t || !topic) return;
+          const s = State.getState();
+          const deck = ensureGameDeck(topic.key);
+          const idx = s.game && typeof s.game.questionIndex === "number" ? s.game.questionIndex : 0;
+          const answers = Object.assign({}, (s.game && s.game.answers) || {});
+          const arr = (answers[topic.key] || []).slice(0);
+          arr.push({ question: deck[idx] || "", text: t, index: idx });
+          answers[topic.key] = arr.slice(-20);
+          State.updateSlice("game", { activeTopic: topic.key, questionIndex: idx, answers });
+        }
+        function hideGameHint() {
+          State.updateSlice("game", { showHint: false });
+        }
+        function backFromGameStage() {
+          const s = State.getState();
+          const stage = (s.game && s.game.stage) || "category";
+          if (stage === "cards") {
+            State.updateSlice("game", { stage: "mode", showHint: true });
+            return;
+          }
+          if (stage === "mode") {
+            State.updateSlice("game", { stage: "category", activeTopic: null, mode: null });
+            return;
+          }
+          navigate("menu");
+        }
+        function chooseGameMode(mode) {
+          const s = State.getState();
+          if (!s.game || !s.game.activeTopic) return;
+          if (mode === "chat") {
+            State.updateSlice("game", { mode: "chat", stage: "mode" });
+            navigate("chat");
+            return;
+          }
+          State.updateSlice("game", { mode: "cards", stage: "cards", showHint: true });
+        }
+        function readCardBase(card) {
+          const styles = getComputedStyle(card);
+          const offset = parseFloat(styles.getPropertyValue("--card-offset")) || 0;
+          const tilt = parseFloat(styles.getPropertyValue("--card-tilt")) || 0;
+          return {
+            baseY: offset * 18,
+            baseScale: 1 - offset * 0.04,
+            baseTilt: tilt,
+          };
+        }
+        function resetSwipeCard(card, base) {
+          if (!card) return;
+          const { baseY, baseScale, baseTilt } = base || readCardBase(card);
+          card.style.transition = "transform 240ms var(--easing-standard)";
+          card.style.transform = `translate3d(0px, ${baseY}px, 0) scale(${baseScale}) rotate(${baseTilt}deg)`;
+          setTimeout(() => {
+            card.style.transition = "";
+          }, 240);
+        }
+        function attachSwipeGestures() {
+          document.addEventListener(
+            "pointerdown",
+            (e) => {
+              const card = e.target.closest(".game-swipe-card--active");
+              const s = State.getState();
+              if (!card || !(s.game && s.game.stage === "cards")) return;
+              if (e.cancelable) e.preventDefault();
+              swipeTracker.pointerId = e.pointerId;
+              swipeTracker.startX = e.clientX;
+              swipeTracker.card = card;
+              const base = readCardBase(card);
+              swipeTracker.baseY = base.baseY;
+              swipeTracker.baseScale = base.baseScale;
+              swipeTracker.baseTilt = base.baseTilt;
+              swipeTracker.dx = 0;
+              swipeTracker.raf = null;
+              try {
+                card.setPointerCapture(e.pointerId);
+              } catch {}
+              card.style.transition = "none";
+            },
+            { passive: false }
+          );
+          document.addEventListener(
+            "pointermove",
+            (e) => {
+              if (!swipeTracker.card || swipeTracker.pointerId !== e.pointerId) return;
+              if (e.cancelable) e.preventDefault();
+              swipeTracker.dx = Math.max(-360, Math.min(360, e.clientX - swipeTracker.startX));
+              if (swipeTracker.raf) return;
+              swipeTracker.raf = requestAnimationFrame(() => {
+                if (!swipeTracker.card) {
+                  swipeTracker.raf = null;
+                  return;
+                }
+                const dx = swipeTracker.dx;
+                swipeTracker.card.style.transform = `translate3d(${dx}px, ${swipeTracker.baseY}px, 0) scale(${swipeTracker.baseScale}) rotate(${swipeTracker.baseTilt + dx / 24}deg)`;
+                swipeTracker.raf = null;
+              });
+            },
+            { passive: false }
+          );
+          document.addEventListener(
+            "pointerup",
+            (e) => {
+              if (!swipeTracker.card || swipeTracker.pointerId !== e.pointerId) return;
+              const dx = e.clientX - swipeTracker.startX;
+              const card = swipeTracker.card;
+              const base = { baseY: swipeTracker.baseY, baseScale: swipeTracker.baseScale, baseTilt: swipeTracker.baseTilt };
+              swipeTracker.pointerId = null;
+              swipeTracker.card = null;
+              swipeTracker.raf = null;
+              const s = State.getState();
+              const stage = s.game && s.game.stage;
+              if (Math.abs(dx) > 60 && stage === "cards") {
+                card.classList.add("is-leaving");
+                card.style.transition = "transform 320ms var(--easing-accelerate), opacity 240ms var(--easing-accelerate)";
+                card.style.transform = `translate3d(${dx * 1.1}px, ${base.baseY}px, 0) scale(${base.baseScale}) rotate(${base.baseTilt + dx / 14}deg)`;
+                setTimeout(() => {
+                  if (dx < 0) {
+                    nextGameQuestion();
+                  } else {
+                    prevGameQuestion();
+                  }
+                  card.classList.remove("is-leaving");
+                  resetSwipeCard(card, base);
+                }, 180);
+              } else {
+                resetSwipeCard(card, base);
+              }
+            },
+            { passive: false }
+          );
+          document.addEventListener("pointercancel", () => {
+            if (!swipeTracker.card) return;
+            resetSwipeCard(swipeTracker.card, {
+              baseY: swipeTracker.baseY,
+              baseScale: swipeTracker.baseScale,
+              baseTilt: swipeTracker.baseTilt,
+            });
+            swipeTracker.card = null;
+            swipeTracker.pointerId = null;
+            swipeTracker.raf = null;
+          });
+        }
+        function toggleHistoryPanel() {
+          const s = State.getState();
+          const open = !(s.historyView && s.historyView.open);
+          const latest = s.scoresHistory && s.scoresHistory.length ? s.scoresHistory[s.scoresHistory.length - 1].date : null;
+          const selected = s.historyView && s.historyView.selectedDate ? s.historyView.selectedDate : latest;
+          State.updateSlice("historyView", { open, selectedDate: selected });
+        }
+        function selectHistoryDate(dateStr) {
+          if (!dateStr) return;
+          State.updateSlice("historyView", { open: true, selectedDate: dateStr });
+        }
+        function saveHistoryNote(dateStr) {
+          if (!dateStr) return;
+          const field = document.querySelector(`[data-role="history-note"][data-date="${dateStr}"]`);
+          if (!field) return;
+          State.updateHistoryNote(dateStr, field.value || "");
+        }
+        function openHistoryFull() {
+          const s = State.getState();
+          const history = s.scoresHistory || [];
+          const latest = history.length ? history[history.length - 1].date : null;
+          const prev = s.historyView || {};
+          State.updateSlice("historyView", { open: true, selectedDate: prev.selectedDate || latest });
+          navigate("history");
+        }
+        function historyBackToHome() {
+          navigate("home");
+        }
+        function flipTheme() {
+          const cur = State.getState();
+          const next = cur.theme === "dark" ? "light" : "dark";
+          State.setState({ theme: next });
+          applyTheme(next);
+        }
+        /* ---------- TELEGRAM INIT (минимально) ---------- */
+        function initTelegramUser() {
+          try {
+            const tg = window.Telegram && window.Telegram.WebApp;
+            if (!tg) return;
+            tg.ready && tg.ready();
+            const u = tg.initDataUnsafe && tg.initDataUnsafe.user;
+            if (!u) return;
+            const cur = State.getState();
+            State.setState({ user: { id: u.id, name: u.first_name || cur.user.name || "Гость", username: u.username || cur.user.username || null } });
+          } catch (e) {
+            console.warn(e);
+          }
+        }
+        /* ---------- GLOBAL HANDLERS ---------- */
+        function initHandlers() {
+          document.addEventListener("click", (e) => {
+            const btn = e.target.closest("[data-action]");
+            if (!btn) return;
+            const act = btn.dataset.action;
+            switch (act) {
+              case "intro-set-star": {
+                const kind = btn.dataset.kind;
+                const val = Number(btn.dataset.value || 0);
+                const screen = btn.closest(".intro-screen");
+                const idx = screen && screen.dataset.questionIndex ? Number(screen.dataset.questionIndex) : 0;
+                introSetStar(kind, val, idx);
+                break;
+              }
+              case "intro-toggle-reason": {
+                const kind = btn.dataset.kind;
+                const optionIndex = Number(btn.dataset.index || 0);
+                introToggleReason(kind, optionIndex, btn);
+                break;
+              }
+              case "intro-confirm-reasons": {
+                const kind = btn.dataset.kind;
+                const idx = Number(btn.dataset.questionIndex || 0);
+                introConfirmReasons(kind, idx);
+                break;
+              }
+              case "intro-next": {
+                const idx = Number(btn.dataset.questionIndex || 0);
+                introNext(idx);
+                break;
+              }
+              case "nav":
+                navigate(btn.dataset.view || "home", { resetStack: true });
+                break;
+              case "nav-back":
+                goBack();
+                break;
+              case "open-feature":
+                navigate(btn.dataset.feature || "home");
+                break;
+              case "chat-send": {
+                const input = document.querySelector('[data-role="chat-input"]');
+                if (!input) return;
+                const text = input.value;
+                input.value = "";
+                sendChat(text);
+                break;
+              }
+              case "sleep-set":
+                setSleepParam(btn.dataset.key, btn.dataset.value);
+                break;
+              case "sleep-build-plan":
+                buildSleepPlan();
+                break;
+              case "finance-build-plan":
+                buildFinancePlan();
+                break;
+              case "finance-calc-safety":
+                calculateSafetyFund();
+                break;
+              case "game-select-topic":
+              case "game-choose-topic":
+                selectGameTopic(btn.dataset.topic);
+                break;
+              case "game-mode-chat":
+                chooseGameMode("chat");
+                break;
+              case "game-mode-cards":
+                chooseGameMode("cards");
+                break;
+              case "game-back-stage":
+                backFromGameStage();
+                break;
+              case "game-hide-hint":
+                hideGameHint();
+                break;
+              case "game-next-question":
+                nextGameQuestion();
+                break;
+              case "game-prev-question":
+                prevGameQuestion();
+                break;
+              case "game-send-answer": {
+                const topic = btn.dataset.topic;
+                const input = document.querySelector(`[data-role="game-answer"][data-topic="${topic}"]`);
+                const text = input ? input.value : "";
+                if (input) input.value = "";
+                sendGameAnswer(topic, text);
+                break;
+              }
+              case "open-subscription":
+                alert("Экран управления подпиской будет здесь.");
+                break;
+              case "history-open-full":
+                openHistoryFull();
+                break;
+              case "history-back":
+                historyBackToHome();
+                break;
+              case "history-select":
+                selectHistoryDate(btn.dataset.date);
+                break;
+              case "history-save-note":
+                saveHistoryNote(btn.dataset.date);
+                break;
+              case "toggle-theme":
+                flipTheme();
+                break;
+            }
+          });
+          document.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+              const active = document.activeElement;
+              if (active && active.getAttribute("data-role") === "chat-input") {
+                e.preventDefault();
+                const text = active.value;
+                active.value = "";
+                sendChat(text);
+              }
+            }
+          });
+          attachSwipeGestures();
+        }
+        function init() {
+          navStack = [];
+          introRoot = document.getElementById("intro-root");
+          initTelegramUser();
+          initHandlers();
+          applyTheme(State.getState().theme);
+          const initial = State.getState();
+          const normalizedView = safeView(initial.currentView);
+          if (normalizedView !== initial.currentView) {
+            State.setState({ currentView: normalizedView });
+          }
+          const today = new Date().toISOString().slice(0, 10);
+          const alreadyChecked = initial.lastCheckInDate === today;
+          Bus.on("state:changed", () => {
+            const s = State.getState();
+            applyTheme(s.theme);
+            syncHeaderNav();
+            renderMain();
+          });
+          if (introRoot) {
+            const appShell = document.querySelector(".app-shell");
+            const bottomNav = document.querySelector(".c-bottom-nav");
+            if (alreadyChecked) {
+              if (appShell) appShell.classList.remove("app-shell--hidden");
+              if (bottomNav) bottomNav.classList.remove("app-shell--hidden");
+              introRoot.classList.add("intro-hidden");
+              introRoot.innerHTML = "";
+              syncHeaderNav();
+              renderMain();
+            } else {
+              if (appShell) appShell.classList.add("app-shell--hidden");
+              if (bottomNav) bottomNav.classList.add("app-shell--hidden");
+              introRoot.classList.remove("intro-hidden");
+              showIntroLogo();
+            }
+          }
+        }
+        return { init };
+      })();
+      document.addEventListener("DOMContentLoaded", () => {
+        AdviceApp.Features.init();
+      });
+    })();
+  </script>
+</body>
+</html>
